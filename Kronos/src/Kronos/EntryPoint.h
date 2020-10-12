@@ -1,0 +1,11 @@
+#ifndef __ENTRY_POINT_H__
+#define __ENTRY_POINT_H__
+	#ifdef KR_PLATFORM_WINDOWS
+	extern Kronos::Application* Kronos::CreateApplication();
+	int main(int argc, char** argv) {
+		auto app = Kronos::CreateApplication();
+		app->Run();
+		delete app;
+	}
+	#endif
+#endif
