@@ -15,21 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Kronos\Application.h">
+    <ClInclude Include="src\Kronos\EntryPoint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kronos\Core.h">
+    <ClInclude Include="src\Kronos.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kronos.h">
+    <ClInclude Include="src\Kronos\Core.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kronos\EntryPoint.h">
+    <ClInclude Include="src\Kronos\Application.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kronos\Log.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Kronos\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kronos\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

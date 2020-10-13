@@ -1,5 +1,5 @@
-#ifndef __CORE_H__
-#define __CORE_H__
+#ifndef __CORE_HPP__
+#define __CORE_HPP__
 	#ifdef KR_PLATFORM_WINDOWS
 		#ifdef KR_BUILD_DLL
 		#define KRONOS_API __declspec(dllexport)

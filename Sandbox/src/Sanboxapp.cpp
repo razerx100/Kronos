@@ -1,4 +1,4 @@
-#include<Kronos.h>
+#include<Kronos.hpp>
 class Sandbox : public Kronos::Application {
 public:
 	Sandbox() {

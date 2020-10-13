@@ -1,6 +1,6 @@
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
-#include "Core.h"
+#ifndef __APPLICATION_HPP__
+#define __APPLICATION_HPP__
+#include "Core.hpp"
 namespace Kronos {
 	class KRONOS_API Application
 	{

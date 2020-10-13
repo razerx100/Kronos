@@ -11,12 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Kronos.h" />
-    <ClInclude Include="src\Kronos\Application.h" />
-    <ClInclude Include="src\Kronos\Core.h" />
-    <ClInclude Include="src\Kronos\EntryPoint.h" />
+    <ClInclude Include="src\Kronos\Log.hpp" />
+    <ClInclude Include="src\Kronos.hpp" />
+    <ClInclude Include="src\Kronos\Application.hpp" />
+    <ClInclude Include="src\Kronos\Core.hpp" />
+    <ClInclude Include="src\Kronos\EntryPoint.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Kronos\Log.cpp" />
     <ClCompile Include="src\Kronos\Application.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -68,6 +70,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>KR_PLATFORM_WINDOWS;KR_BUILD_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Kronos\vendor\spdlog\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -82,6 +85,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Kronos\vendor\spdlog\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
