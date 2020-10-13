@@ -23,14 +23,14 @@ namespace Kronos {
 #define KR_CORE_WARN(...)  ::Kronos::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define KR_CORE_INFO(...)  ::Kronos::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define KR_CORE_ERROR(...) ::Kronos::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define KR_CORE_FATAL(...) ::Kronos::Log::GetCoreLogger()->fatal(__VA_ARGS__)
+#define KR_CORE_FATAL(...) ::Kronos::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client logs
 #define KR_CLIENT_TRACE(...) ::Kronos::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define KR_CLIENT_WARN(...)  ::Kronos::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define KR_CLIENT_INFO(...)  ::Kronos::Log::GetClientLogger()->info(__VA_ARGS__)
 #define KR_CLIENT_ERROR(...) ::Kronos::Log::GetClientLogger()->error(__VA_ARGS__)
-#define KR_CLIENT_FATAL(...) ::Kronos::Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define KR_CLIENT_FATAL(...) ::Kronos::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 #endif
 
