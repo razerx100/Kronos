@@ -7,6 +7,6 @@ namespace Kronos {
 
 	}
 	void Application::Run() {
-		while(true){}
+        while(true){}
 	}
 }

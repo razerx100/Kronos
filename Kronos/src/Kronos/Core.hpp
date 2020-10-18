@@ -6,6 +6,8 @@
 		#else
 		#define KRONOS_API __declspec(dllimport)
 		#endif
+    #elif KR_PLATFORM_LINUX
+    #define KRONOS_API
 	#else
 	#error ONLY WINDOWS ATM
 	#endif

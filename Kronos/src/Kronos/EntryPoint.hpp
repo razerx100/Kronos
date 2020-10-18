@@ -7,5 +7,12 @@
 		app->Run();
 		delete app;
 	}
+    #elif KR_PLATFORM_LINUX
+	extern Kronos::Application* Kronos::CreateApplication();
+	int main(int argc, char** argv) {
+		auto app = Kronos::CreateApplication();
+		app->Run();
+		delete app;
+	}
 	#endif
 #endif
