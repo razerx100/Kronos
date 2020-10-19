@@ -1,3 +1,3 @@
 cd build
-cmake .. -DPLATFORM:STRING=LINUX
+cmake .. -DPLATFORM:STRING=Linux -DCMAKE_BUILD_TYPE=Debug
 make
