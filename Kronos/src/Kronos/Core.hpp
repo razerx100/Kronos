@@ -9,6 +9,8 @@
     #elif KR_PLATFORM_LINUX
     #define KRONOS_API
 	#else
-	#error ONLY WINDOWS ATM
+	#error NOT CORRECTLY DEFINED
 	#endif
+
+	#define BIT(x) (1 << x)
 #endif
