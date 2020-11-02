@@ -12,3 +12,5 @@ endif()
 
 add_subdirectory(Kronos)
 add_subdirectory(Sandbox)
+
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Sandbox)
