@@ -1,5 +1,6 @@
 #ifndef __LOG_HPP__
 #define __LOG_HPP__
+#include<memory>
 #include"Core.hpp"
 #include"spdlog/spdlog.h"
 #include"spdlog/sinks/stdout_color_sinks.h"

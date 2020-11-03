@@ -1,10 +1,10 @@
 #ifndef __WINDOW_HPP__
 #define __WINDOW_HPP__
+#include<Windows.h>
 #include"Core.hpp"
 #include"Events/Event.hpp"
 namespace Kronos{
-    class WindowProps{
-    public:
+    struct WindowProps{
         std::string Title;
         unsigned int Width, Height;
 
@@ -14,7 +14,7 @@ namespace Kronos{
         ) : Title(title), Width(width), Height(height) {}
     };
 
-    class KRONOS_API Window{
+    class KRONOS_API Window {
     public:
         using EventCallbackFunc = std::function<void(Event&)>;
 
@@ -31,5 +31,8 @@ namespace Kronos{
 
         static Window* Create(const WindowProps& props = WindowProps());
     };
+    #ifdef KR_PLATFORM_WINDOWS
+		HWND KRONOS_API GetWinHandle(Window* win);
+	#endif
 }
 #endif

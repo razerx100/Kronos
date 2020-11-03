@@ -12,6 +12,7 @@ namespace Kronos {
 		Application();
 		virtual ~Application();
 
+		inline Window* GetWindow() { return m_Window; }
 		void Run();
 	};
 	Application* CreateApplication();

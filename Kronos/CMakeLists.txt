@@ -14,10 +14,7 @@ if(PLATFORM STREQUAL "Windows")
         add_compile_definitions(KR_ENABLE_ASSERTS)
     endif()
  	add_compile_definitions(KR_BUILD_DLL)
-    target_precompile_headers(Kronos PRIVATE <Windows.h> <Kronos/Log.hpp> <iostream> <memory> <algorithm> <functional> <string> <sstream>)
+    set_target_properties(Kronos PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${PLATFORM}/${CMAKE_BUILD_TYPE}")
 elseif(PLATFORM STREQUAL "Linux")
-    target_precompile_headers(Kronos PRIVATE <Kronos/Log.hpp> <iostream> <memory> <algorithm> <functional> <string> <sstream>)
+    set_target_properties(Kronos PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${PLATFORM}/${CMAKE_BUILD_TYPE}")
 endif()
-
-
-set_target_properties(Kronos PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${PLATFORM}/${CMAKE_BUILD_TYPE}")

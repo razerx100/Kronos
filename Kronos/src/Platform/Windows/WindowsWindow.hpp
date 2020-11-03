@@ -6,6 +6,7 @@ namespace Kronos{
     private:
         void Init(const WindowProps& props);
         void Shutdown();
+        HWND m_Hwnd;
 
     private:
         class WindowData{
@@ -31,6 +32,9 @@ namespace Kronos{
         inline void SetEventCallback(const EventCallbackFunc& callback) override { m_Data.EventCallback = callback; }
         void SetVSync(bool enables) override;
         bool IsVSynced() const override;
+
+        inline HWND GetHWND() { return m_Hwnd; }
+        static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     };
 }
 #endif

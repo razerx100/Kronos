@@ -1,5 +1,9 @@
 #ifndef __EVENT_HPP__
 #define __EVENT_HPP__
+#include<string>
+#include<ostream>
+#include<functional>
+#include<sstream>
 #include"Kronos/Core.hpp"
 namespace Kronos {
 	enum class EventType {
