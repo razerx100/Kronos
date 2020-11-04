@@ -6,6 +6,7 @@ namespace Kronos{
     private:
         void Init(const WindowProps& props);
         void Shutdown();
+        LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
         HWND m_Hwnd;
 
     private:
