@@ -4,12 +4,6 @@
 namespace Kronos{
     class WindowsWindow : public Window {
     private:
-        void Init(const WindowProps& props);
-        void Shutdown();
-        LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-        HWND m_Hwnd;
-
-    private:
         class WindowData{
         public:
             std::string Title;
@@ -21,9 +15,13 @@ namespace Kronos{
 
         WindowData m_Data;
 
+    private:
+        void Init(const WindowProps& props);
+        LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data);
+        HWND m_Hwnd;
+
     public:
         WindowsWindow(const WindowProps& props);
-        ~WindowsWindow();
 
         void OnUpdate() override;
 

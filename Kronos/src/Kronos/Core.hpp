@@ -1,6 +1,7 @@
 #ifndef __CORE_HPP__
 #define __CORE_HPP__
 	#ifdef KR_PLATFORM_WINDOWS
+		#include<Windows.h>
 		#ifdef KR_BUILD_DLL
 		#define KRONOS_API __declspec(dllexport)
 		#else

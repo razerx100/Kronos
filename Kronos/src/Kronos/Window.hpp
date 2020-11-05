@@ -1,10 +1,10 @@
 #ifndef __WINDOW_HPP__
 #define __WINDOW_HPP__
-#include<Windows.h>
 #include"Core.hpp"
 #include"Events/Event.hpp"
 namespace Kronos{
-    struct WindowProps{
+    class WindowProps{
+    public:
         std::string Title;
         unsigned int Width, Height;
 

@@ -1,5 +1,5 @@
 #include"WindowsWindow.hpp"
-#include"Kronos/Log.hpp"
+#include"Kronos/Events/ApplicationEvent.hpp"
 namespace Kronos{
     Window* Window::Create(const WindowProps& props){
         return new WindowsWindow(props);
@@ -9,11 +9,11 @@ namespace Kronos{
         Init(props);
     }
 
-    WindowsWindow::~WindowsWindow(){
-
-    }
-
     void WindowsWindow::Init(const WindowProps& props){
+        m_Data.Title = props.Title;
+        m_Data.Height = props.Height;
+        m_Data.Width = props.Width;
+
         WNDCLASS wc = {};
 
         wc.lpfnWndProc = WindowProc;
@@ -35,10 +35,6 @@ namespace Kronos{
         );
     }
 
-    void WindowsWindow::Shutdown(){
-
-    }
-
     void WindowsWindow::OnUpdate(){
 
     }
@@ -51,12 +47,16 @@ namespace Kronos{
         return m_Data.VSync;
     }
 
-    LRESULT WindowsWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    LRESULT WindowsWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data) {
         switch (uMsg)
         {
         case WM_DESTROY:
+        {
+            WindowCloseEvent event;
+            data.EventCallback(event);
             PostQuitMessage(0);
-            return 0;
+        }
+        return 0;
 
         case WM_PAINT:
         {
@@ -89,7 +89,7 @@ namespace Kronos{
             pThis = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
         }
         if (pThis) {
-            return pThis->HandleMessage(uMsg, wParam, lParam);
+            return pThis->HandleMessage(uMsg, wParam, lParam, pThis->m_Data);
         }
         else {
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
