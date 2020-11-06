@@ -32,9 +32,8 @@ namespace Kronos {
 
     class KRONOS_API Event {
 		friend class EventDispatcher;
-	protected:
-		bool m_handled = false;
 	public:
+		bool handled = false;
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual int GetCategory() const = 0;
@@ -56,7 +55,7 @@ namespace Kronos {
         template<typename T>
         bool Dispatch(EventFn<T> func){
             if(m_event.GetEventType() == T::GetStaticType()){
-                m_event.m_handled = func(*(T*)&m_event);
+                m_event.handled = func(*(T*)&m_event);
                 return true;
             }
             return false;

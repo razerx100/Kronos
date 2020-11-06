@@ -1,5 +1,7 @@
 #include"WindowsWindow.hpp"
 #include"Kronos/Events/ApplicationEvent.hpp"
+#include"Kronos/Events/KeyEvent.hpp"
+#include"Kronos/Events/MouseEvent.hpp"
 namespace Kronos{
     Window* Window::Create(const WindowProps& props){
         return new WindowsWindow(props);
@@ -57,7 +59,85 @@ namespace Kronos{
             PostQuitMessage(0);
         }
         return 0;
-
+        case WM_SIZE:
+        {
+            data.Width = LOWORD(lParam);
+            data.Height = HIWORD(lParam);
+            WindowResizeEvent event(data.Width, data.Height);
+            data.EventCallback(event);
+        }
+        return 0;
+        //Keyboard key events
+        case WM_KEYDOWN:
+        {
+            KeyPressedEvent event((UINT)wParam, LOWORD(lParam));
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_KEYUP:
+        {
+            KeyReleasedEvent event((UINT)wParam);
+            data.EventCallback(event);
+        }
+        return 0;
+        //Mouse Events
+        case WM_MOUSEWHEEL:
+        {
+            MouseScrolledEvent event(0, HIWORD(wParam));
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_MOUSEHWHEEL:
+        {
+            MouseScrolledEvent event(HIWORD(wParam), 0);
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_MOUSEMOVE:
+        {
+            POINTS pt = MAKEPOINTS(lParam);
+            MouseMovedEvent event(pt.x, pt.y);
+            data.EventCallback(event);
+        }
+        return 0;
+        //Mouse Button Events
+        case WM_LBUTTONDOWN:
+        {
+            MouseButtonPressedEvent event((UINT)MK_LBUTTON);
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_RBUTTONDOWN:
+        {
+            MouseButtonPressedEvent event((UINT)MK_RBUTTON);
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_MBUTTONDOWN:
+        {
+            MouseButtonPressedEvent event((UINT)MK_MBUTTON);
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_LBUTTONUP:
+        {
+            MouseButtonReleasedEvent event((UINT)MK_LBUTTON);
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_RBUTTONUP:
+        {
+            MouseButtonReleasedEvent event((UINT)MK_RBUTTON);
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_MBUTTONUP:
+        {
+            MouseButtonReleasedEvent event((UINT)MK_MBUTTON);
+            data.EventCallback(event);
+        }
+        return 0;
+        //Other events
         case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -66,7 +146,6 @@ namespace Kronos{
             EndPaint(m_Hwnd, &ps);
         }
         return 0;
-
         default:
             return DefWindowProc(m_Hwnd, uMsg, wParam, lParam);
         }
