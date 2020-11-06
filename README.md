@@ -2,8 +2,8 @@
 Game engine(in the making).
 
 # Requirements
-cmake 3.12+
-make(for building on Linux)
+1: cmake 3.12+
+2: make (For building on Linux)
 
 # Instructions
 	Clone the repository. Initilize the git submodules.
