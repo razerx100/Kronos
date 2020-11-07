@@ -10,8 +10,7 @@ namespace Kronos {
 	}
 	void Application::Run() {
 		while(m_Running){
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+			m_LayerStack.for_each([](Layer* layer) { layer->OnUpdate(); });
             m_Window->OnUpdate();
         }
 	}
@@ -19,11 +18,10 @@ namespace Kronos {
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
-			(*--it)->OnEvent(event);
-			if (event.handled)
-				break;
-		}
+		m_LayerStack.for_each_reverse([&event](Layer* layer) {
+				layer->OnEvent(event);
+				return event.handled;
+			}, true);
 	}
 	bool Application::OnWindowClose(WindowCloseEvent& event) {
 		m_Running = false;
