@@ -20,6 +20,7 @@ namespace Kronos{
 
         virtual ~Window() {}
 
+        virtual void Show() {}
         virtual void OnUpdate() = 0;
 
         virtual unsigned GetWidth() const = 0;
@@ -31,8 +32,5 @@ namespace Kronos{
 
         static Window* Create(const WindowProps& props = WindowProps());
     };
-    #ifdef KR_PLATFORM_WINDOWS
-		HWND KRONOS_API GetWinHandle(Window* win);
-	#endif
 }
 #endif

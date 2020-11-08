@@ -7,14 +7,15 @@
 		PWSTR pCmdLine, int nCmdShow) {
         Kronos::Log::Init();
 		auto app = Kronos::CreateApplication();
-		ShowWindow(Kronos::GetWinHandle(app->GetWindow()), nCmdShow);
 		auto run = [&app]() { app->Run(); };
 		std::thread th1(run);
+
 		MSG msg = { };
 		while (GetMessage(&msg, NULL, 0, 0)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+
 		th1.join();
 		delete app;
 		return 0;

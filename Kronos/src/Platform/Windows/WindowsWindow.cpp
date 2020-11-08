@@ -37,6 +37,10 @@ namespace Kronos{
         );
     }
 
+    void WindowsWindow::Show() {
+        ShowWindow(m_Hwnd, SW_SHOWNORMAL);
+    }
+
     void WindowsWindow::OnUpdate(){
 
     }
@@ -173,10 +177,5 @@ namespace Kronos{
         else {
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
         }
-    }
-
-    HWND GetWinHandle(Window* win) {
-        WindowsWindow* ptr = reinterpret_cast<WindowsWindow*>(win);
-        return ptr->GetHWND();
     }
 }

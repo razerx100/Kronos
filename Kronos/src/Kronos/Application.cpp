@@ -1,9 +1,12 @@
 #include "Application.hpp"
 namespace Kronos {
+	Application* Application::s_Instance = nullptr;
 
 	Application::Application() : m_Running(true) {
+		s_Instance = this;
         m_Window = Window::Create();
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->Show();
 	}
 	Application::~Application() {
         delete m_Window;

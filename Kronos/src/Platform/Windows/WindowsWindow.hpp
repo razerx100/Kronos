@@ -27,12 +27,12 @@ namespace Kronos{
 
         inline unsigned int GetWidth() const override { return m_Data.Width; }
         inline unsigned int GetHeight() const override { return m_Data.Height; }
-
         inline void SetEventCallback(const EventCallbackFunc& callback) override { m_Data.EventCallback = callback; }
+
+        void Show() override;
         void SetVSync(bool enables) override;
         bool IsVSynced() const override;
 
-        inline HWND GetHWND() { return m_Hwnd; }
         static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     };
 }
