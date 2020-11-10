@@ -2,6 +2,7 @@
 #include"Kronos/Events/ApplicationEvent.hpp"
 #include"Kronos/Events/KeyEvent.hpp"
 #include"Kronos/Events/MouseEvent.hpp"
+#include"Platform/Windows/resources/resource.hpp"
 namespace Kronos{
     Window* Window::Create(const WindowProps& props){
         return new WindowsWindow(props);
@@ -16,13 +17,17 @@ namespace Kronos{
         m_Data.Height = props.Height;
         m_Data.Width = props.Width;
 
-        WNDCLASS wc = {};
+        WNDCLASSEX wc = {};
 
+        wc.cbSize = sizeof(WNDCLASSEX);
         wc.lpfnWndProc = WindowProc;
         wc.hInstance = GetModuleHandle(0);
         wc.lpszClassName = props.Title.c_str();
+        wc.hIcon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON));
+        wc.hIconSm = (HICON)LoadImage(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON), IMAGE_ICON, 16, 16, 0);
+        wc.lpszMenuName = MAKEINTRESOURCE(IDR_MENU);
 
-        RegisterClass(&wc);
+        RegisterClassEx(&wc);
 
         m_Hwnd = CreateWindowEx(
             0,
@@ -69,6 +74,18 @@ namespace Kronos{
             data.Height = HIWORD(lParam);
             WindowResizeEvent event(data.Width, data.Height);
             data.EventCallback(event);
+        }
+        return 0;
+        case WM_COMMAND:
+        {
+            switch (LOWORD(wParam))
+            {
+            case ID_FILE_EXIT:
+                DestroyWindow(m_Hwnd);
+                break;
+            default:
+                break;
+            }
         }
         return 0;
         //Keyboard key events

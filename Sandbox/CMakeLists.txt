@@ -1,7 +1,7 @@
 include_directories(../Kronos/vendor/spdlog/include ../Kronos/src)
 
 if(PLATFORM STREQUAL "Windows")
-	add_executable(Sandbox WIN32 src/Sandboxapp.cpp)
+	add_executable(Sandbox WIN32 src/Sandboxapp.cpp resources/KRONOS.ico resources/Kronos.rc)
 	set_target_properties(Sandbox PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${PLATFORM}")
 else()
 	add_executable(Sandbox src/Sandboxapp.cpp)
