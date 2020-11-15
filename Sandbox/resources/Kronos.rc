@@ -1,11 +1,3 @@
 #include"Platform/Windows/resources/resource.hpp"
 
-IDR_MENU MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "E&xit", ID_FILE_EXIT
-    END
-END
-
 IDI_APP_ICON ICON "KRONOS.ico"
