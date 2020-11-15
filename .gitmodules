@@ -1,6 +1,0 @@
-[submodule "Kronos/vendor/spdlog"]
-	path = Kronos/vendor/spdlog
-	url = https://github.com/gabime/spdlog
-[submodule "Kronos/vendor/imgui"]
-	path = Kronos/vendor/imgui
-	url = https://github.com/ocornut/imgui.git

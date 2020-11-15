@@ -13,8 +13,8 @@ namespace Kronos {
 	}
 	void Application::Run() {
 		while(m_Running){
-			m_LayerStack.for_each([](Layer* layer) { layer->OnUpdate(); });
             m_Window->OnUpdate();
+			m_LayerStack.for_each([](Layer* layer) { layer->OnUpdate(); });
         }
 	}
 	void Application::OnEvent(Event& event) {

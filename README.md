@@ -6,8 +6,12 @@ Game engine (Under development).
 2: make (For building on Linux).\
 3: Visual Studio 2019 (For building on Windows).
 
+# External Libraries
+1: spdlog.\
+2: Dear ImGui
+
 # Instructions
-First clone the repository. Then initialize the git submodules. Now follow either of the steps below.
+First clone the repository. Now follow either of the steps below.
 
 ### Windows
 Run the Setup.bat to setup the cmake project. Visual Studio's solution file will be generated in the build directory. The project can then be opened as either a solution or a cmake project in Visual Studio.
