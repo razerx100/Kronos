@@ -13,7 +13,7 @@
 	#error NOT CORRECTLY DEFINED
 	#endif
 
-    #ifdef KR_ENABLE_ASSERTS
+    #ifdef KR_BUILD_DEBUG
         #define KR_ASSERT(x, ...) {if(!x) { KR_CLIENT_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
         #define KR_CORE_ASSERT(x, ...) {if(!x) { KR_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
     #else

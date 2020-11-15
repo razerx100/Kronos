@@ -3,9 +3,7 @@ class ExampleLayer : public Kronos::Layer {
 public:
 	ExampleLayer() : Layer("KR") {}
 
-	void OnUpdate() override {
-		KR_CLIENT_INFO("Layer Update");
-	}
+	void OnUpdate() override {}
 
 	void OnEvent(Kronos::Event& event) override {
 		KR_CLIENT_TRACE("{0}", event);

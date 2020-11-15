@@ -10,6 +10,10 @@ elseif(PLATFORM STREQUAL "Windows")
     add_compile_definitions(KR_PLATFORM_WINDOWS)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_definitions(KR_BUILD_DEBUG)
+endif()
+
 add_subdirectory(Kronos)
 add_subdirectory(Sandbox)
 
