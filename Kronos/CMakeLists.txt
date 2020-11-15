@@ -1,4 +1,4 @@
-include_directories(vendor/spdlog/include src)
+include_directories(vendor/spdlog/include vendor/imgui/backends vendor/imgui src)
 
 if(PLATFORM STREQUAL "Windows")
     file(GLOB_RECURSE KR_SRC src/Kronos/*.hpp src/Kronos/*.cpp Kronos.hpp src/Platform/Windows/*.hpp src/Platform/Windows/*.cpp)

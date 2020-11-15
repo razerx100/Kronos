@@ -1,5 +1,7 @@
 #ifndef __WINDOWS_WINDOW_HPP__
 #define __WINDOWS_WINDOW_HPP__
+#include<vector>
+#include<string>
 #include<Kronos/Window.hpp>
 namespace Kronos{
     class WindowsWindow : public Window {
@@ -17,8 +19,11 @@ namespace Kronos{
 
     private:
         void Init(const WindowProps& props);
+
+        static std::vector<std::string> s_AllWindows;
         LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data);
         HWND m_Hwnd;
+        MSG msg;
 
     public:
         WindowsWindow(const WindowProps& props);

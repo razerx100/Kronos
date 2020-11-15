@@ -4,15 +4,19 @@
 #include"Kronos/Events/MouseEvent.hpp"
 #include"Platform/Windows/resources/resource.hpp"
 namespace Kronos{
+    std::vector<std::string> WindowsWindow::s_AllWindows;
+
     Window* Window::Create(const WindowProps& props){
         return new WindowsWindow(props);
     }
 
     WindowsWindow::WindowsWindow(const WindowProps& props){
         Init(props);
+        ZeroMemory(&msg, sizeof(msg));
     }
 
     void WindowsWindow::Init(const WindowProps& props){
+        s_AllWindows.push_back(props.Title);
         m_Data.Title = props.Title;
         m_Data.Height = props.Height;
         m_Data.Width = props.Width;
@@ -25,7 +29,7 @@ namespace Kronos{
         wc.lpszClassName = props.Title.c_str();
         wc.hIcon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON));
         wc.hIconSm = (HICON)LoadImage(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON), IMAGE_ICON, 16, 16, 0);
-        wc.lpszMenuName = MAKEINTRESOURCE(IDR_MENU);
+        //wc.lpszMenuName = MAKEINTRESOURCE(IDR_MENU);
 
         RegisterClassEx(&wc);
 
@@ -43,11 +47,14 @@ namespace Kronos{
     }
 
     void WindowsWindow::Show() {
-        ShowWindow(m_Hwnd, SW_SHOWNORMAL);
+        ::ShowWindow(m_Hwnd, SW_SHOWNORMAL);
     }
 
     void WindowsWindow::OnUpdate(){
-
+        while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE)) {
+			::TranslateMessage(&msg);
+			::DispatchMessageA(&msg);
+		}
     }
 
     void WindowsWindow::SetVSync(bool enabled){
@@ -65,7 +72,10 @@ namespace Kronos{
         {
             WindowCloseEvent event;
             data.EventCallback(event);
-            PostQuitMessage(0);
+            auto it = std::find(s_AllWindows.begin(), s_AllWindows.end(), data.Title);
+            s_AllWindows.erase(it);
+            if(s_AllWindows.empty())
+                PostQuitMessage(0);
         }
         return 0;
         case WM_SIZE:
@@ -161,6 +171,7 @@ namespace Kronos{
         //Other events
         case WM_PAINT:
         {
+
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(m_Hwnd, &ps);
             FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
@@ -179,9 +190,9 @@ namespace Kronos{
         WindowsWindow* pThis = NULL;
 
         if (uMsg == WM_NCCREATE) {
-            CREATESTRUCT* pCreate = (CREATESTRUCT*)lParam;
-            pThis = (WindowsWindow*)pCreate->lpCreateParams;
-            SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pThis);
+            CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
+            pThis = reinterpret_cast<WindowsWindow*>(pCreate->lpCreateParams);
+            SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pThis));
 
             pThis->m_Hwnd = hwnd;
         }
