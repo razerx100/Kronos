@@ -3,6 +3,7 @@
 #include<Kronos/Layer.hpp>
 #include<d3d12.h>
 #include<dxgi1_4.h>
+#include"imgui.h"
 
 namespace Kronos {
 	struct FrameContext {
@@ -28,6 +29,9 @@ namespace Kronos {
 		HANDLE                       g_hSwapChainWaitableObject;
 		ID3D12Resource*              g_mainRenderTargetResource[NUM_BACK_BUFFERS];
 		D3D12_CPU_DESCRIPTOR_HANDLE  g_mainRenderTargetDescriptor[NUM_BACK_BUFFERS];
+
+		bool showDemowindow;
+		ImVec4 clear_color;
 
 		bool CreateDeviceD3D(HWND hWnd);
 		void CleanupDeviceD3D();

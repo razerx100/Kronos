@@ -33,6 +33,7 @@
 
 // DirectX
 #include <d3d12.h>
+#pragma comment(lib, "d3d12.lib") // d3d12 link
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>
 #ifdef _MSC_VER
