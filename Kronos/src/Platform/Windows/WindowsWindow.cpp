@@ -8,17 +8,19 @@ namespace Kronos {
         return new WindowsWindow(props);
     }
 
-    WindowsWindow::WindowsWindow(const WindowProps& props){
+    WindowsWindow::WindowsWindow(const WindowProps& props) : wc{} {
         Init(props);
         ZeroMemory(&msg, sizeof(msg));
+    }
+
+    WindowsWindow::~WindowsWindow(){
+        ::UnregisterClass(wc.lpszClassName, wc.hInstance);
     }
 
     void WindowsWindow::Init(const WindowProps& props){
         m_Data.Title = props.Title;
         m_Data.Height = props.Height;
         m_Data.Width = props.Width;
-
-        WNDCLASSEX wc = {};
 
         wc.cbSize = sizeof(WNDCLASSEX);
         wc.lpfnWndProc = WindowProc;

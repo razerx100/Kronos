@@ -21,13 +21,16 @@ namespace Kronos{
 
         HWND m_Hwnd;
         MSG msg;
+        WNDCLASSEX wc;
 
     public:
         WindowsWindow(const WindowProps& props);
+        ~WindowsWindow();
 
         inline unsigned int GetWidth() const override { return m_Data.Width; }
         inline unsigned int GetHeight() const override { return m_Data.Height; }
         inline void SetEventCallback(const EventCallbackFunc& callback) override { m_Data.EventCallback = callback; }
+        inline HWND GetHWND() const { return m_Hwnd; }
 
         void OnUpdate() override;
         void Show() override;

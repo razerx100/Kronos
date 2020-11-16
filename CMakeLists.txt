@@ -14,6 +14,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(KR_BUILD_DEBUG)
 endif()
 
+add_subdirectory(Kronos/vendor/imgui)
 add_subdirectory(Kronos)
 add_subdirectory(Sandbox)
 

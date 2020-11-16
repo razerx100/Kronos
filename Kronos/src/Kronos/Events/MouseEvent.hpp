@@ -21,7 +21,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     };
 
-    class KRONOS_API MouseScrolledEvent : public Event{
+    class KRONOS_API MouseScrolledEvent : public Event {
     private:
         float m_xOffset, m_yOffset;
     public:
