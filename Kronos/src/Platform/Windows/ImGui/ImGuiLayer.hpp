@@ -10,7 +10,7 @@ namespace Kronos {
 	    ID3D12CommandAllocator* CommandAllocator;
 		UINT64                  FenceValue;
 	};
-	class ImGuiLayer : public Layer {
+	class KRONOS_API ImGuiLayer : public Layer {
 	private:
 		static int const             NUM_FRAMES_IN_FLIGHT = 3;
 		FrameContext                 g_frameContext[NUM_FRAMES_IN_FLIGHT];
@@ -30,7 +30,8 @@ namespace Kronos {
 		ID3D12Resource*              g_mainRenderTargetResource[NUM_BACK_BUFFERS];
 		D3D12_CPU_DESCRIPTOR_HANDLE  g_mainRenderTargetDescriptor[NUM_BACK_BUFFERS];
 
-		bool showDemowindow;
+		HWND hwnd;
+		bool showDemowindow = true, showAnotherWindow = false;
 		ImVec4 clear_color;
 
 		bool CreateDeviceD3D(HWND hWnd);

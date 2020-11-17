@@ -4,16 +4,18 @@
 namespace Kronos{
     class KRONOS_API WindowResizeEvent : public Event {
     private:
-        unsigned int m_width, m_height;
+        unsigned int m_width, m_height, m_state;
     public:
-        WindowResizeEvent(unsigned int width, unsigned int height) : m_width(width), m_height(height) {}
+        WindowResizeEvent(unsigned int width, unsigned int height, unsigned int state)
+            : m_width(width), m_height(height), m_state(state) {}
 
         inline unsigned int GetWidth() const { return m_width; }
         inline unsigned int GetHeight() const { return m_height; }
+        inline unsigned int GetState() const { return m_state; }
 
         std::string ToString() const override {
             std::stringstream ss;
-            ss << "WindowResizeEvent: " << m_width << ", " << m_height << ".";
+            ss << "WindowResizeEvent: " << m_width << ", " << m_height << ", " << m_state << ".";
             return ss.str();
         }
 

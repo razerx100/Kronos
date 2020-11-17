@@ -13,6 +13,7 @@ class Sandbox : public Kronos::Application {
 public:
 	Sandbox() {
 		PushLayer(new ExampleLayer());
+		PushOverlay(new Kronos::ImGuiLayer());
 	}
 	~Sandbox() {
 

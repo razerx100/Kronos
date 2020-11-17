@@ -25,7 +25,7 @@ namespace Kronos {
 		void PushOverlay(Layer* overlay);
 
 		static Application& GetApp() { return *s_Instance; }
-		inline Window& GetWindow() { return *m_Window; }
+		inline Window* GetWindow() { return m_Window; }
 	};
 	Application* CreateApplication();
 

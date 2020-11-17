@@ -3,12 +3,14 @@
 #include"Kronos/Events/KeyEvent.hpp"
 #include"Kronos/Events/MouseEvent.hpp"
 #include"Platform/Windows/resources/resource.hpp"
+
 namespace Kronos {
     Window* Window::Create(const WindowProps& props){
         return new WindowsWindow(props);
     }
 
-    WindowsWindow::WindowsWindow(const WindowProps& props) : wc{} {
+    WindowsWindow::WindowsWindow(const WindowProps& props)
+        : wc{} {
         Init(props);
         ZeroMemory(&msg, sizeof(msg));
     }
@@ -23,6 +25,7 @@ namespace Kronos {
         m_Data.Width = props.Width;
 
         wc.cbSize = sizeof(WNDCLASSEX);
+        wc.style = CS_CLASSDC;
         wc.lpfnWndProc = WindowProc;
         wc.hInstance = GetModuleHandle(0);
         wc.lpszClassName = props.Title.c_str();
@@ -40,12 +43,13 @@ namespace Kronos {
             CW_USEDEFAULT, CW_USEDEFAULT,
             props.Width,
             props.Height,
-            NULL, NULL, GetModuleHandle(0), this
+            NULL, NULL, wc.hInstance, this
         );
     }
 
     void WindowsWindow::Show() {
         ::ShowWindow(m_Hwnd, SW_SHOWNORMAL);
+        ::UpdateWindow(m_Hwnd);
     }
 
     void WindowsWindow::OnUpdate(){
@@ -76,7 +80,7 @@ namespace Kronos {
         {
             data.Width = LOWORD(lParam);
             data.Height = HIWORD(lParam);
-            WindowResizeEvent event(data.Width, data.Height);
+            WindowResizeEvent event(data.Width, data.Height, (UINT)wParam);
             data.EventCallback(event);
         }
         return 0;

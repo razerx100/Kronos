@@ -1,4 +1,4 @@
-include_directories(../Kronos/vendor/spdlog/include ../Kronos/src)
+include_directories(../Kronos/vendor/spdlog/include ../Kronos/src ../Kronos/vendor/imgui)
 
 if(PLATFORM STREQUAL "Windows")
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")

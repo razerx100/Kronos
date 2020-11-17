@@ -1,9 +1,8 @@
 #ifndef __KRONOS_HPP__
 #define __KRONOS_HPP__
 #include"Kronos/Application.hpp"
-#ifdef KR_BUILD_DEBUG
-	#include"Kronos/Log.hpp"
-#endif
+#include"Kronos/Log.hpp"
+#include"Platform/Windows/ImGui/ImGuiLayer.hpp"
 //---Entry Point---
 #include"Kronos/EntryPoint.hpp"
 //---Entry Point---
