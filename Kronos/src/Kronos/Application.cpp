@@ -6,7 +6,7 @@ namespace Kronos {
 	Application::Application() : m_Running(true) {
 		s_Instance = this;
         m_Window = Window::Create();
-		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_Window->Show();
 	}
 	Application::~Application() {
@@ -20,15 +20,20 @@ namespace Kronos {
 	}
 	void Application::OnEvent(Event& event) {
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowDestroyEvent>(BIND_EVENT_FN(Application::OnWindowDestroy));
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 
 		m_LayerStack.for_each_reverse([&event](Layer* layer) {
 				layer->OnEvent(event);
 				return event.handled;
 			}, true);
 	}
-	bool Application::OnWindowClose(WindowCloseEvent& event) {
+	bool Application::OnWindowDestroy(WindowDestroyEvent& event) {
 		m_Running = false;
+		return true;
+	}
+	bool Application::OnWindowClose(WindowCloseEvent& event) {
+		m_Window->Close();
 		return true;
 	}
 	void Application::PushLayer(Layer* layer) {

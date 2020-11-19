@@ -34,8 +34,7 @@ namespace Kronos{
 
         void OnUpdate() override;
         void Show() override;
-        void SetVSync(bool enables) override;
-        bool IsVSynced() const override;
+        void Close() override;
 
         static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     };

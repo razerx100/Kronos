@@ -52,6 +52,10 @@ namespace Kronos {
         ::UpdateWindow(m_Hwnd);
     }
 
+    void WindowsWindow::Close() {
+        ::DestroyWindow(m_Hwnd);
+    }
+
     void WindowsWindow::OnUpdate(){
         while (::PeekMessage(&msg, m_Hwnd, 0U, 0U, PM_REMOVE)) {
 			::TranslateMessage(&msg);
@@ -59,20 +63,19 @@ namespace Kronos {
 		}
     }
 
-    void WindowsWindow::SetVSync(bool enabled){
-        m_Data.VSync = enabled;
-    }
-
-    bool WindowsWindow::IsVSynced() const {
-        return m_Data.VSync;
-    }
-
     LRESULT WindowsWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data) {
         switch (uMsg)
         {
-        case WM_DESTROY:
+        //Application events
+        case WM_CLOSE:
         {
             WindowCloseEvent event;
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_DESTROY:
+        {
+            WindowDestroyEvent event;
             data.EventCallback(event);
         }
         return 0;
@@ -80,45 +83,52 @@ namespace Kronos {
         {
             data.Width = LOWORD(lParam);
             data.Height = HIWORD(lParam);
-            WindowResizeEvent event(data.Width, data.Height, (UINT)wParam);
+            WindowResizeEvent event(data.Width, data.Height, static_cast<UINT>(wParam));
             data.EventCallback(event);
         }
         return 0;
-        case WM_COMMAND:
+        case WM_PAINT:
         {
-            switch (LOWORD(wParam))
-            {
-            case ID_FILE_EXIT:
-                DestroyWindow(m_Hwnd);
-                break;
-            default:
-                break;
-            }
+
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(m_Hwnd, &ps);
+            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+            EndPaint(m_Hwnd, &ps);
         }
         return 0;
         //Keyboard key events
         case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
         {
-            KeyPressedEvent event((UINT)wParam, LOWORD(lParam));
+            KeyPressedEvent event(static_cast<int>(wParam), LOWORD(lParam));
             data.EventCallback(event);
         }
         return 0;
         case WM_KEYUP:
+        case WM_SYSKEYUP:
         {
-            KeyReleasedEvent event((UINT)wParam);
+            KeyReleasedEvent event(static_cast<int>(wParam));
+            data.EventCallback(event);
+        }
+        return 0;
+        case WM_CHAR:
+        {
+            KeyTypedEvent event(static_cast<int>(wParam));
             data.EventCallback(event);
         }
         return 0;
         //Mouse Events
         case WM_MOUSEWHEEL:
         {
-            MouseScrolledEvent event(0, HIWORD(wParam));
+            float yOffset = GET_WHEEL_DELTA_WPARAM(wParam) / static_cast<float>(WHEEL_DELTA);
+            MouseScrolledEvent event(0, yOffset);
             data.EventCallback(event);
         }
         return 0;
         case WM_MOUSEHWHEEL:
         {
-            MouseScrolledEvent event(HIWORD(wParam), 0);
+            float xOffset = GET_WHEEL_DELTA_WPARAM(wParam) / static_cast<float>(WHEEL_DELTA);
+            MouseScrolledEvent event(xOffset, 0);
             data.EventCallback(event);
         }
         return 0;
@@ -130,50 +140,32 @@ namespace Kronos {
         }
         return 0;
         //Mouse Button Events
-        case WM_LBUTTONDOWN:
+        case WM_LBUTTONDOWN: case WM_LBUTTONDBLCLK:
+        case WM_RBUTTONDOWN: case WM_RBUTTONDBLCLK:
+        case WM_MBUTTONDOWN: case WM_MBUTTONDBLCLK:
+        case WM_XBUTTONDOWN: case WM_XBUTTONDBLCLK:
         {
-            MouseButtonPressedEvent event((UINT)MK_LBUTTON);
-            data.EventCallback(event);
-        }
-        return 0;
-        case WM_RBUTTONDOWN:
-        {
-            MouseButtonPressedEvent event((UINT)MK_RBUTTON);
-            data.EventCallback(event);
-        }
-        return 0;
-        case WM_MBUTTONDOWN:
-        {
-            MouseButtonPressedEvent event((UINT)MK_MBUTTON);
+            int button = 0;
+            if (uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONDBLCLK) { button = 0; }
+            if (uMsg == WM_RBUTTONDOWN || uMsg == WM_RBUTTONDBLCLK) { button = 1; }
+            if (uMsg == WM_MBUTTONDOWN || uMsg == WM_MBUTTONDBLCLK) { button = 2; }
+            if (uMsg == WM_XBUTTONDOWN || uMsg == WM_XBUTTONDBLCLK) { button = (GET_XBUTTON_WPARAM(wParam) == XBUTTON1) ? 3 : 4; }
+            MouseButtonPressedEvent event(button);
             data.EventCallback(event);
         }
         return 0;
         case WM_LBUTTONUP:
-        {
-            MouseButtonReleasedEvent event((UINT)MK_LBUTTON);
-            data.EventCallback(event);
-        }
-        return 0;
         case WM_RBUTTONUP:
-        {
-            MouseButtonReleasedEvent event((UINT)MK_RBUTTON);
-            data.EventCallback(event);
-        }
-        return 0;
         case WM_MBUTTONUP:
+        case WM_XBUTTONUP:
         {
-            MouseButtonReleasedEvent event((UINT)MK_MBUTTON);
+            int button = 0;
+            if (uMsg == WM_LBUTTONUP) { button = 0; }
+            if (uMsg == WM_RBUTTONUP) { button = 1; }
+            if (uMsg == WM_MBUTTONUP) { button = 2; }
+            if (uMsg == WM_XBUTTONUP) { button = (GET_XBUTTON_WPARAM(wParam) == XBUTTON1) ? 3 : 4; }
+            MouseButtonReleasedEvent event(button);
             data.EventCallback(event);
-        }
-        return 0;
-        //Other events
-        case WM_PAINT:
-        {
-
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(m_Hwnd, &ps);
-            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-            EndPaint(m_Hwnd, &ps);
         }
         return 0;
         default:

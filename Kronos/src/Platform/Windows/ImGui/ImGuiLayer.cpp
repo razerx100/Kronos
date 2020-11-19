@@ -2,8 +2,8 @@
 #include"imgui.h"
 #include"Kronos/Application.hpp"
 #include"Platform/Windows/WindowsWindow.hpp"
-#include"Platform/Windows/DirectX12/imgui_impl_win32.hpp"
-#include"Platform/Windows/DirectX12/imgui_impl_dx12.hpp"
+#include"Platform/Windows/DirectX12/ImGui/imgui_impl_win32.hpp"
+#include"Platform/Windows/DirectX12/ImGui/imgui_impl_dx12.hpp"
 
 #pragma comment(lib, "DXGI.lib") // DXGI Lib link
 
@@ -131,20 +131,6 @@ namespace Kronos {
         g_pd3dCommandQueue->Signal(g_fence, fenceValue);
         g_fenceLastSignaledValue = fenceValue;
         frameCtxt->FenceValue = fenceValue;
-	}
-	void ImGuiLayer::OnEvent(Event& event) {
-        if (event.GetEventType() == WindowResizeEvent::GetStaticType()) {
-            WindowResizeEvent p_event = *(reinterpret_cast<WindowResizeEvent*>(&event));
-            if (g_pd3dDevice != NULL && p_event.GetState() != SIZE_MINIMIZED)
-            {
-                WaitForLastSubmittedFrame();
-                ImGui_ImplDX12_InvalidateDeviceObjects();
-                CleanupRenderTarget();
-                ResizeSwapChain(hwnd, p_event.GetWidth(), p_event.GetHeight());
-                CreateRenderTarget();
-                ImGui_ImplDX12_CreateDeviceObjects();
-            }
-        }
 	}
 	bool ImGuiLayer::CreateDeviceD3D(HWND hWnd) {
 	    // Setup swap chain
@@ -355,4 +341,60 @@ namespace Kronos {
         g_hSwapChainWaitableObject = g_pSwapChain->GetFrameLatencyWaitableObject();
         assert(g_hSwapChainWaitableObject != NULL);
 	}
+
+    void ImGuiLayer::OnEvent(Event& event) {
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(ImGuiLayer::OnWindowResize));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(ImGuiLayer::OnMousePress));
+        dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FN(ImGuiLayer::OnMouseRelease));
+        dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(ImGuiLayer::OnMouseScroll));
+        dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyPress));
+        dispatcher.Dispatch<KeyReleasedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyRelease));
+        dispatcher.Dispatch<KeyTypedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyType));
+    }
+    bool ImGuiLayer::OnWindowResize(WindowResizeEvent& event) {
+        if (g_pd3dDevice != NULL && event.GetState() != SIZE_MINIMIZED) {
+            WaitForLastSubmittedFrame();
+            ImGui_ImplDX12_InvalidateDeviceObjects();
+            CleanupRenderTarget();
+            ResizeSwapChain(hwnd, event.GetWidth(), event.GetHeight());
+            CreateRenderTarget();
+            ImGui_ImplDX12_CreateDeviceObjects();
+        }
+        return false;
+    }
+    bool ImGuiLayer::OnMousePress(MouseButtonPressedEvent& event) {
+        if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
+            ::SetCapture(hwnd);
+        ImGui::GetIO().MouseDown[event.GetMouseButton()] = true;
+        return false;
+    }
+    bool ImGuiLayer::OnMouseRelease(MouseButtonReleasedEvent& event) {
+        ImGui::GetIO().MouseDown[event.GetMouseButton()] = false;
+        if (!ImGui::IsAnyMouseDown() && ::GetCapture() == hwnd)
+            ::ReleaseCapture();
+        return false;
+    }
+    bool ImGuiLayer::OnMouseScroll(MouseScrolledEvent& event) {
+        ImGuiIO& io = ImGui::GetIO();
+        io.MouseWheel += event.GetYOffset();
+        io.MouseWheelH += event.GetXOffset();
+        return false;
+    }
+    bool ImGuiLayer::OnKeyPress(KeyPressedEvent& event) {
+        if (event.GetKeyCode() < 256)
+            ImGui::GetIO().KeysDown[event.GetKeyCode()] = 1;
+        return false;
+    }
+    bool ImGuiLayer::OnKeyRelease(KeyReleasedEvent& event) {
+        if (event.GetKeyCode() < 256)
+            ImGui::GetIO().KeysDown[event.GetKeyCode()] = 0;
+        return false;
+    }
+    bool ImGuiLayer::OnKeyType(KeyTypedEvent& event) {
+        int keycode = event.GetKeyCode();
+        if (keycode > 0 && keycode < 0x10000)
+            ImGui::GetIO().AddInputCharacterUTF16((static_cast<unsigned short>(keycode)));
+        return false;
+    }
 }

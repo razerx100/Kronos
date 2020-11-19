@@ -4,6 +4,9 @@
 #include<d3d12.h>
 #include<dxgi1_4.h>
 #include"imgui.h"
+#include"Kronos/Events/ApplicationEvent.hpp"
+#include"Kronos/Events/MouseEvent.hpp"
+#include"Kronos/Events/KeyEvent.hpp"
 
 namespace Kronos {
 	struct FrameContext {
@@ -41,6 +44,14 @@ namespace Kronos {
 		void WaitForLastSubmittedFrame();
 		FrameContext* WaitForNextFrameResources();
 		void ResizeSwapChain(HWND hWnd, int width, int height);
+
+		bool OnWindowResize(WindowResizeEvent& event);
+		bool OnMousePress(MouseButtonPressedEvent& event);
+		bool OnMouseRelease(MouseButtonReleasedEvent& event);
+		bool OnMouseScroll(MouseScrolledEvent& event);
+		bool OnKeyPress(KeyPressedEvent& event);
+		bool OnKeyRelease(KeyReleasedEvent& event);
+		bool OnKeyType(KeyTypedEvent& event);
 
 	public:
 		ImGuiLayer();

@@ -31,6 +31,31 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
+    class KRONOS_API WindowDestroyEvent : public Event {
+    public:
+        WindowDestroyEvent() {}
+
+        EVENT_CLASS_TYPE(WindowDestroy)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+
+    class KRONOS_API DeviceChangedEvent : public Event {
+    private:
+        unsigned int m_EventData;
+    public:
+        DeviceChangedEvent(unsigned int eventData) : m_EventData(eventData) {}
+
+        inline unsigned int GetEventData() const { return m_EventData; }
+
+        std::string ToString() const {
+            std::stringstream ss;
+            ss << "Device changed event: " << m_EventData << ".";
+            return ss.str();
+        }
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_TYPE(DeviceChanged)
+    };
+
     class KRONOS_API AppTickEvent : public Event {
     public:
         AppTickEvent() {}

@@ -14,7 +14,7 @@ namespace Kronos {
         bool m_Running;
 		LayerStack m_LayerStack;
 
-		bool OnWindowClose(WindowCloseEvent& event);
+		bool OnWindowDestroy(WindowDestroyEvent& event);
 	public:
 		Application();
 		virtual ~Application();
@@ -24,11 +24,11 @@ namespace Kronos {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
+		virtual bool OnWindowClose(WindowCloseEvent& event);
+
 		static Application& GetApp() { return *s_Instance; }
 		inline Window* GetWindow() { return m_Window; }
 	};
 	Application* CreateApplication();
-
-	#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 }
 #endif

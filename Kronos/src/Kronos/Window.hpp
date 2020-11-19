@@ -20,15 +20,17 @@ namespace Kronos{
 
         virtual ~Window() {}
 
-        virtual void Show() {}
         virtual void OnUpdate() = 0;
 
         virtual unsigned GetWidth() const = 0;
         virtual unsigned GetHeight() const = 0;
 
         virtual void SetEventCallback(const EventCallbackFunc& callback) = 0;
-        virtual void SetVSync(bool enabled) = 0;
-        virtual bool IsVSynced() const = 0;
+
+        virtual void SetVSync(bool enabled) {}
+        virtual bool IsVSynced() const { return true; }
+        virtual void Show() {}
+        virtual void Close() {}
 
         static Window* Create(const WindowProps& props = WindowProps());
     };
