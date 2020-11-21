@@ -100,20 +100,20 @@ namespace Kronos {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
         {
-            KeyPressedEvent event(static_cast<int>(wParam), LOWORD(lParam));
+            KeyPressedEvent event(wParam, LOWORD(lParam));
             data.EventCallback(event);
         }
         return 0;
         case WM_KEYUP:
         case WM_SYSKEYUP:
         {
-            KeyReleasedEvent event(static_cast<int>(wParam));
+            KeyReleasedEvent event(wParam);
             data.EventCallback(event);
         }
         return 0;
         case WM_CHAR:
         {
-            KeyTypedEvent event(static_cast<int>(wParam));
+            KeyTypedEvent event(wParam);
             data.EventCallback(event);
         }
         return 0;

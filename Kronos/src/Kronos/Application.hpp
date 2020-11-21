@@ -5,6 +5,9 @@
 #include "LayerStack.hpp"
 #include "Events/Event.hpp"
 #include "Events/ApplicationEvent.hpp"
+#include "Events/KeyEvent.hpp"
+#include "Events/MouseEvent.hpp"
+
 namespace Kronos {
 	class KRONOS_API Application
 	{
@@ -15,6 +18,10 @@ namespace Kronos {
 		LayerStack m_LayerStack;
 
 		bool OnWindowDestroy(WindowDestroyEvent& event);
+		bool OnKeyPress(KeyPressedEvent& event);
+		bool OnMouseKeyPress(MouseButtonPressedEvent& event);
+		bool OnKeyRelease(KeyReleasedEvent& event);
+		bool OnMouseKeyRelease(MouseButtonReleasedEvent& event);
 	public:
 		Application();
 		virtual ~Application();
@@ -30,5 +37,6 @@ namespace Kronos {
 		inline Window* GetWindow() { return m_Window; }
 	};
 	Application* CreateApplication();
+
 }
 #endif

@@ -1,5 +1,8 @@
 #include "Application.hpp"
 #include"Platform/Windows/ImGui/ImGuiLayer.hpp"
+#include"KeyCodes.hpp"
+#include"InputManager.hpp"
+
 namespace Kronos {
 	Application* Application::s_Instance = nullptr;
 
@@ -22,11 +25,21 @@ namespace Kronos {
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowDestroyEvent>(BIND_EVENT_FN(Application::OnWindowDestroy));
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPress));
+		dispatcher.Dispatch<KeyReleasedEvent>(BIND_EVENT_FN(Application::OnKeyRelease));
 
 		m_LayerStack.for_each_reverse([&event](Layer* layer) {
 				layer->OnEvent(event);
 				return event.handled;
 			}, true);
+	}
+	void Application::PushLayer(Layer* layer) {
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+	void Application::PushOverlay(Layer* overlay) {
+		m_LayerStack.PushOverLay(overlay);
+		overlay->OnAttach();
 	}
 	bool Application::OnWindowDestroy(WindowDestroyEvent& event) {
 		m_Running = false;
@@ -36,12 +49,18 @@ namespace Kronos {
 		m_Window->Close();
 		return true;
 	}
-	void Application::PushLayer(Layer* layer) {
-		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
+	bool Application::OnKeyPress(KeyPressedEvent& event) {
+		++InputManager::m_keys[event.GetKeyCode()];
+		return false;
 	}
-	void Application::PushOverlay(Layer* overlay) {
-		m_LayerStack.PushOverLay(overlay);
-		overlay->OnAttach();
+	bool Application::OnMouseKeyPress(MouseButtonPressedEvent& event) {
+		return false;
+	}
+	bool Application::OnKeyRelease(KeyReleasedEvent& event) {
+		InputManager::m_keys[event.GetKeyCode()] = 0;
+		return false;
+	}
+	bool Application::OnMouseKeyRelease(MouseButtonReleasedEvent& event) {
+		return false;
 	}
 }

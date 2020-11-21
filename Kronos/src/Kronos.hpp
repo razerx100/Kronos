@@ -3,6 +3,8 @@
 #include"Kronos/Application.hpp"
 #include"Kronos/Log.hpp"
 #include"Platform/Windows/ImGui/ImGuiLayer.hpp"
+#include"Kronos/InputManager.hpp"
+#include"Kronos/KeyCodes.hpp"
 //---Entry Point---
 #include"Kronos/EntryPoint.hpp"
 //---Entry Point---
