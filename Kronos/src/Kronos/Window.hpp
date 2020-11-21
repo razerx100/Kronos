@@ -3,8 +3,7 @@
 #include"Core.hpp"
 #include"Events/Event.hpp"
 namespace Kronos{
-    class WindowProps{
-    public:
+    struct WindowProps{
         std::string Title;
         unsigned int Width, Height;
 

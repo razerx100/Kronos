@@ -18,10 +18,7 @@ namespace Kronos {
 		LayerStack m_LayerStack;
 
 		bool OnWindowDestroy(WindowDestroyEvent& event);
-		bool OnKeyPress(KeyPressedEvent& event);
-		bool OnMouseKeyPress(MouseButtonPressedEvent& event);
-		bool OnKeyRelease(KeyReleasedEvent& event);
-		bool OnMouseKeyRelease(MouseButtonReleasedEvent& event);
+		bool OnMouseMove(MouseMovedEvent& event);
 	public:
 		Application();
 		virtual ~Application();

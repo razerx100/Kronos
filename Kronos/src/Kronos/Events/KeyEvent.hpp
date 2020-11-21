@@ -13,16 +13,12 @@ namespace Kronos{
     };
 
     class KRONOS_API KeyPressedEvent : public KeyEvent{
-    private:
-        int m_repeatCount;
     public:
-        KeyPressedEvent(int keycode, int repeatCount) : KeyEvent(keycode), m_repeatCount(repeatCount) {}
-
-        inline int GetRepeatCount() const { return m_repeatCount; }
+        KeyPressedEvent(int keycode) : KeyEvent(keycode) {}
 
         std::string ToString() const override{
             std::stringstream ss;
-            ss << "KeyPressedEvent: " << m_keycode << " (" << m_repeatCount << " repeats).";
+            ss << "KeyPressedEvent: " << m_keycode << ".";
             return ss.str();
         }
 

@@ -4,8 +4,10 @@ public:
 	ExampleLayer() : Layer("KR") {}
 
 	void OnUpdate() override {
-		if (Kronos::InputManager::isKeyPressed(Kronos::KeyCode::Backspace))
-			KR_CLIENT_INFO("Backspace pressed {0}", Kronos::InputManager::getKeyRepeat(Kronos::KeyCode::Backspace));
+		if (Kronos::InputManager::isKeyPressed(Kronos::KeyCode::BraceStartUS) && Kronos::InputManager::isKeyPressed(Kronos::KeyCode::Shift))
+			KR_CLIENT_INFO("{");
+		else if (Kronos::InputManager::isKeyPressed(Kronos::KeyCode::BraceStartUS))
+			KR_CLIENT_INFO("[");
 	}
 
 	void OnEvent(Kronos::Event& event) override {}

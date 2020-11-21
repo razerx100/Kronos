@@ -25,8 +25,7 @@ namespace Kronos {
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowDestroyEvent>(BIND_EVENT_FN(Application::OnWindowDestroy));
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
-		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPress));
-		dispatcher.Dispatch<KeyReleasedEvent>(BIND_EVENT_FN(Application::OnKeyRelease));
+		dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Application::OnMouseMove));
 
 		m_LayerStack.for_each_reverse([&event](Layer* layer) {
 				layer->OnEvent(event);
@@ -49,18 +48,8 @@ namespace Kronos {
 		m_Window->Close();
 		return true;
 	}
-	bool Application::OnKeyPress(KeyPressedEvent& event) {
-		++InputManager::m_keys[event.GetKeyCode()];
-		return false;
-	}
-	bool Application::OnMouseKeyPress(MouseButtonPressedEvent& event) {
-		return false;
-	}
-	bool Application::OnKeyRelease(KeyReleasedEvent& event) {
-		InputManager::m_keys[event.GetKeyCode()] = 0;
-		return false;
-	}
-	bool Application::OnMouseKeyRelease(MouseButtonReleasedEvent& event) {
+	bool Application::OnMouseMove(MouseMovedEvent& event) {
+		InputManager::setMousePos(event.GetX(), event.GetY());
 		return false;
 	}
 }
