@@ -8,7 +8,8 @@ Game engine (Under development).
 
 # External Libraries
 1: spdlog.\
-2: Dear ImGui.
+2: Dear ImGui.\
+3: DirectXMath
 
 # Instructions
 First clone the repository. Now follow either of the steps below.
