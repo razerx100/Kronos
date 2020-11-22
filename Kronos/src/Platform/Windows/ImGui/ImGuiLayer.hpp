@@ -33,7 +33,7 @@ namespace Kronos {
 		ID3D12Resource*              g_mainRenderTargetResource[NUM_BACK_BUFFERS];
 		D3D12_CPU_DESCRIPTOR_HANDLE  g_mainRenderTargetDescriptor[NUM_BACK_BUFFERS];
 
-		HWND hwnd;
+		HWND m_hwnd;
 		bool showDemowindow = true, showAnotherWindow = false;
 		ImVec4 clear_color;
 
@@ -46,6 +46,9 @@ namespace Kronos {
 		void ResizeSwapChain(HWND hWnd, int width, int height);
 
 		bool OnWindowResize(WindowResizeEvent& event);
+		bool OnWindowMove(WindowMovedEvent& event);
+		bool OnWindowClose(WindowCloseEvent& event);
+
 		bool OnMousePress(MouseButtonPressedEvent& event);
 		bool OnMouseRelease(MouseButtonReleasedEvent& event);
 		bool OnMouseScroll(MouseScrolledEvent& event);
@@ -57,10 +60,12 @@ namespace Kronos {
 		ImGuiLayer();
 		~ImGuiLayer();
 
-		void OnAttach();
-		void OnDetach();
-		void OnUpdate();
-		void OnEvent(Event& event);
+		void OnAttach() override;
+		void OnDetach() override;
+		void OnEvent(Event& event) override;
+
+		void Begin();
+		void End();
 	};
 }
 #endif

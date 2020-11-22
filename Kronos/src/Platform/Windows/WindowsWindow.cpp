@@ -57,7 +57,7 @@ namespace Kronos {
     }
 
     void WindowsWindow::OnUpdate(){
-        while (::PeekMessage(&msg, m_Hwnd, 0U, 0U, PM_REMOVE)) {
+        while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE)) {
 			::TranslateMessage(&msg);
 			::DispatchMessageA(&msg);
 		}
@@ -76,6 +76,13 @@ namespace Kronos {
         case WM_DESTROY:
         {
             WindowDestroyEvent event;
+            data.EventCallback(event);
+            PostQuitMessage(0);
+        }
+        return 0;
+        case WM_MOVE:
+        {
+            WindowMovedEvent event;
             data.EventCallback(event);
         }
         return 0;

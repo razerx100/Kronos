@@ -1,8 +1,8 @@
 #ifndef __KRONOS_HPP__
 #define __KRONOS_HPP__
+#include"imgui.h"
 #include"Kronos/Application.hpp"
 #include"Kronos/Log.hpp"
-#include"Platform/Windows/ImGui/ImGuiLayer.hpp"
 #include"DirectXMath.h"
 #include"Kronos/InputManager.hpp"
 #include"Kronos/KeyCodes.hpp"

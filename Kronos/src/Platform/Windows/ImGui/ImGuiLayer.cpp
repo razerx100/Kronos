@@ -2,10 +2,11 @@
 #include"imgui.h"
 #include"Kronos/Application.hpp"
 #include"Platform/Windows/WindowsWindow.hpp"
-#include"Platform/Windows/DirectX12/ImGui/imgui_impl_win32.hpp"
-#include"Platform/Windows/DirectX12/ImGui/imgui_impl_dx12.hpp"
+#include"backends/imgui_impl_dx12.h"
+#include"backends/imgui_impl_win32.h"
 
 #pragma comment(lib, "DXGI.lib") // DXGI Lib link
+#pragma comment(lib, "d3d12.lib") // Dx12 Lib link
 
 #ifdef KR_BUILD_DEBUG
 #define DX12_ENABLE_DEBUG_LAYER
@@ -30,9 +31,9 @@ namespace Kronos {
     }
 
 	void ImGuiLayer::OnAttach() {
-        hwnd = (reinterpret_cast<WindowsWindow*>(Application::GetApp().GetWindow()))->GetHWND();
+        m_hwnd = (reinterpret_cast<WindowsWindow*>(Application::GetApp().GetWindow()))->GetHWND();
 
-        if (!CreateDeviceD3D(hwnd)){
+        if (!CreateDeviceD3D(m_hwnd)){
             CleanupDeviceD3D();
             return;
         }
@@ -40,10 +41,20 @@ namespace Kronos {
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		ImGui::StyleColorsDark();
+        ImGui::StyleColorsDark();
 
-		ImGui_ImplWin32_Init(hwnd);
+        ImGuiStyle& style = ImGui::GetStyle();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            style.WindowRounding = 0.0f;
+            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
+
+		ImGui_ImplWin32_Init(m_hwnd);
 		ImGui_ImplDX12_Init(g_pd3dDevice, NUM_FRAMES_IN_FLIGHT,
 			DXGI_FORMAT_R8G8B8A8_UNORM, g_pd3dSrvDescHeap,
 			g_pd3dSrvDescHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -57,48 +68,13 @@ namespace Kronos {
 
 		CleanupDeviceD3D();
 	}
-	void ImGuiLayer::OnUpdate() {
-		ImGui_ImplDX12_NewFrame();
+    void ImGuiLayer::Begin() {
+        ImGui_ImplDX12_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-
-        if (showDemowindow)
-            ImGui::ShowDemoWindow(&showDemowindow);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &showDemowindow);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &showAnotherWindow);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-
-        // 3. Show another simple window.
-        if (showAnotherWindow)
-        {
-            ImGui::Begin("Another Window", &showAnotherWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                showAnotherWindow = false;
-            ImGui::End();
-        }
-
-		FrameContext* frameCtxt = WaitForNextFrameResources();
+    }
+    void ImGuiLayer::End() {
+        FrameContext* frameCtxt = WaitForNextFrameResources();
         UINT backBufferIdx = g_pSwapChain->GetCurrentBackBufferIndex();
         frameCtxt->CommandAllocator->Reset();
 
@@ -124,6 +100,13 @@ namespace Kronos {
 
         g_pd3dCommandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&g_pd3dCommandList);
 
+        // Update and Render additional Platform Windows
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault(NULL, (void*)g_pd3dCommandList);
+        }
+
         g_pSwapChain->Present(1, 0); // Present with vsync
         //g_pSwapChain->Present(0, 0); // Present without vsync
 
@@ -131,7 +114,63 @@ namespace Kronos {
         g_pd3dCommandQueue->Signal(g_fence, fenceValue);
         g_fenceLastSignaledValue = fenceValue;
         frameCtxt->FenceValue = fenceValue;
-	}
+    }
+    void ImGuiLayer::OnEvent(Event& event) {
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(ImGuiLayer::OnWindowResize));
+
+        dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(ImGuiLayer::OnMousePress));
+        dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FN(ImGuiLayer::OnMouseRelease));
+        dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(ImGuiLayer::OnMouseScroll));
+        dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyPress));
+        dispatcher.Dispatch<KeyReleasedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyRelease));
+        dispatcher.Dispatch<KeyTypedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyType));
+    }
+    bool ImGuiLayer::OnWindowResize(WindowResizeEvent& event) {
+        if (g_pd3dDevice != NULL && event.GetState() != SIZE_MINIMIZED) {
+            WaitForLastSubmittedFrame();
+            ImGui_ImplDX12_InvalidateDeviceObjects();
+            CleanupRenderTarget();
+            ResizeSwapChain(m_hwnd, event.GetWidth(), event.GetHeight());
+            CreateRenderTarget();
+            ImGui_ImplDX12_CreateDeviceObjects();
+        }
+        return false;
+    }
+    bool ImGuiLayer::OnMousePress(MouseButtonPressedEvent& event) {
+        if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
+            ::SetCapture(m_hwnd);
+        ImGui::GetIO().MouseDown[event.GetMouseButton()] = true;
+        return false;
+    }
+    bool ImGuiLayer::OnMouseRelease(MouseButtonReleasedEvent& event) {
+        ImGui::GetIO().MouseDown[event.GetMouseButton()] = false;
+        if (!ImGui::IsAnyMouseDown() && ::GetCapture() == m_hwnd)
+            ::ReleaseCapture();
+        return false;
+    }
+    bool ImGuiLayer::OnMouseScroll(MouseScrolledEvent& event) {
+        ImGuiIO& io = ImGui::GetIO();
+        io.MouseWheel += event.GetYOffset();
+        io.MouseWheelH += event.GetXOffset();
+        return false;
+    }
+    bool ImGuiLayer::OnKeyPress(KeyPressedEvent& event) {
+        if (event.GetKeyCode() < 256)
+            ImGui::GetIO().KeysDown[event.GetKeyCode()] = 1;
+        return false;
+    }
+    bool ImGuiLayer::OnKeyRelease(KeyReleasedEvent& event) {
+        if (event.GetKeyCode() < 256)
+            ImGui::GetIO().KeysDown[event.GetKeyCode()] = 0;
+        return false;
+    }
+    bool ImGuiLayer::OnKeyType(KeyTypedEvent& event) {
+        int keycode = event.GetKeyCode();
+        if (keycode > 0 && keycode < 0x10000)
+            ImGui::GetIO().AddInputCharacterUTF16((static_cast<unsigned short>(keycode)));
+        return false;
+    }
 	bool ImGuiLayer::CreateDeviceD3D(HWND hWnd) {
 	    // Setup swap chain
         DXGI_SWAP_CHAIN_DESC1 sd;
@@ -151,14 +190,14 @@ namespace Kronos {
             sd.Stereo = FALSE;
         }
 
-        // [DEBUG] Enable debug interface
+    // [DEBUG] Enable debug interface
 #ifdef DX12_ENABLE_DEBUG_LAYER
         ID3D12Debug* pdx12Debug = NULL;
         if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&pdx12Debug))))
             pdx12Debug->EnableDebugLayer();
 #endif
 
-        // Create device
+    // Create device
         D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
         if (D3D12CreateDevice(NULL, featureLevel, IID_PPV_ARGS(&g_pd3dDevice)) != S_OK)
             return false;
@@ -228,7 +267,6 @@ namespace Kronos {
         if (g_fenceEvent == NULL)
             return false;
 
-
         {
             IDXGIFactory4* dxgiFactory = NULL;
             IDXGISwapChain1* swapChain1 = NULL;
@@ -277,13 +315,13 @@ namespace Kronos {
             g_mainRenderTargetResource[i] = pBackBuffer;
         }
 	}
-	void ImGuiLayer::CleanupRenderTarget() {
+    void ImGuiLayer::CleanupRenderTarget() {
         WaitForLastSubmittedFrame();
 
-       for (UINT i = 0; i < NUM_BACK_BUFFERS; i++)
+        for (UINT i = 0; i < NUM_BACK_BUFFERS; i++)
             if (g_mainRenderTargetResource[i]) { g_mainRenderTargetResource[i]->Release(); g_mainRenderTargetResource[i] = NULL; }
     }
-	void ImGuiLayer::WaitForLastSubmittedFrame() {
+    void ImGuiLayer::WaitForLastSubmittedFrame() {
         FrameContext* frameCtxt = &g_frameContext[g_frameIndex % NUM_FRAMES_IN_FLIGHT];
 
         UINT64 fenceValue = frameCtxt->FenceValue;
@@ -296,8 +334,8 @@ namespace Kronos {
 
         g_fence->SetEventOnCompletion(fenceValue, g_fenceEvent);
         WaitForSingleObject(g_fenceEvent, INFINITE);
-	}
-	FrameContext* ImGuiLayer::WaitForNextFrameResources() {
+    }
+    FrameContext* ImGuiLayer::WaitForNextFrameResources() {
         UINT nextFrameIndex = g_frameIndex + 1;
         g_frameIndex = nextFrameIndex;
 
@@ -317,8 +355,8 @@ namespace Kronos {
         WaitForMultipleObjects(numWaitableObjects, waitableObjects, TRUE, INFINITE);
 
         return frameCtxt;
-	}
-	void ImGuiLayer::ResizeSwapChain(HWND hWnd, int width, int height) {
+    }
+    void ImGuiLayer::ResizeSwapChain(HWND hWnd, int width, int height) {
         DXGI_SWAP_CHAIN_DESC1 sd;
         g_pSwapChain->GetDesc1(&sd);
         sd.Width = width;
@@ -340,61 +378,5 @@ namespace Kronos {
 
         g_hSwapChainWaitableObject = g_pSwapChain->GetFrameLatencyWaitableObject();
         assert(g_hSwapChainWaitableObject != NULL);
-	}
-
-    void ImGuiLayer::OnEvent(Event& event) {
-        EventDispatcher dispatcher(event);
-        dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(ImGuiLayer::OnWindowResize));
-        dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(ImGuiLayer::OnMousePress));
-        dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FN(ImGuiLayer::OnMouseRelease));
-        dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(ImGuiLayer::OnMouseScroll));
-        dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyPress));
-        dispatcher.Dispatch<KeyReleasedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyRelease));
-        dispatcher.Dispatch<KeyTypedEvent>(BIND_EVENT_FN(ImGuiLayer::OnKeyType));
-    }
-    bool ImGuiLayer::OnWindowResize(WindowResizeEvent& event) {
-        if (g_pd3dDevice != NULL && event.GetState() != SIZE_MINIMIZED) {
-            WaitForLastSubmittedFrame();
-            ImGui_ImplDX12_InvalidateDeviceObjects();
-            CleanupRenderTarget();
-            ResizeSwapChain(hwnd, event.GetWidth(), event.GetHeight());
-            CreateRenderTarget();
-            ImGui_ImplDX12_CreateDeviceObjects();
-        }
-        return false;
-    }
-    bool ImGuiLayer::OnMousePress(MouseButtonPressedEvent& event) {
-        if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
-            ::SetCapture(hwnd);
-        ImGui::GetIO().MouseDown[event.GetMouseButton()] = true;
-        return false;
-    }
-    bool ImGuiLayer::OnMouseRelease(MouseButtonReleasedEvent& event) {
-        ImGui::GetIO().MouseDown[event.GetMouseButton()] = false;
-        if (!ImGui::IsAnyMouseDown() && ::GetCapture() == hwnd)
-            ::ReleaseCapture();
-        return false;
-    }
-    bool ImGuiLayer::OnMouseScroll(MouseScrolledEvent& event) {
-        ImGuiIO& io = ImGui::GetIO();
-        io.MouseWheel += event.GetYOffset();
-        io.MouseWheelH += event.GetXOffset();
-        return false;
-    }
-    bool ImGuiLayer::OnKeyPress(KeyPressedEvent& event) {
-        if (event.GetKeyCode() < 256)
-            ImGui::GetIO().KeysDown[event.GetKeyCode()] = 1;
-        return false;
-    }
-    bool ImGuiLayer::OnKeyRelease(KeyReleasedEvent& event) {
-        if (event.GetKeyCode() < 256)
-            ImGui::GetIO().KeysDown[event.GetKeyCode()] = 0;
-        return false;
-    }
-    bool ImGuiLayer::OnKeyType(KeyTypedEvent& event) {
-        int keycode = event.GetKeyCode();
-        if (keycode > 0 && keycode < 0x10000)
-            ImGui::GetIO().AddInputCharacterUTF16((static_cast<unsigned short>(keycode)));
-        return false;
     }
 }

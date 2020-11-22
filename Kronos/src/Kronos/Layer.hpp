@@ -2,6 +2,7 @@
 #define __LAYER_HPP__
 #include "Core.hpp"
 #include "Events/Event.hpp"
+#include "imgui.h"
 namespace Kronos {
 	class KRONOS_API Layer {
 	protected:
@@ -13,6 +14,7 @@ namespace Kronos {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
+		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
 		inline const std::string& GetName() const { return m_DebugName; }

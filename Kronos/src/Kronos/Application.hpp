@@ -7,14 +7,16 @@
 #include "Events/ApplicationEvent.hpp"
 #include "Events/KeyEvent.hpp"
 #include "Events/MouseEvent.hpp"
+#include "Platform/Windows/ImGui/ImGuiLayer.hpp"
+#include "Log.hpp"
 
 namespace Kronos {
-	class KRONOS_API Application
-	{
+	class KRONOS_API Application {
     private:
 		static Application* s_Instance;
         Window* m_Window;
-        bool m_Running;
+		ImGuiLayer* m_ImGuiLayer;
+		bool m_Running;
 		LayerStack m_LayerStack;
 
 		bool OnWindowDestroy(WindowDestroyEvent& event);

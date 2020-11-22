@@ -31,6 +31,14 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
+    class KRONOS_API WindowMovedEvent : public Event {
+    public:
+        WindowMovedEvent() {}
+
+        EVENT_CLASS_TYPE(WindowMoved)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+
     class KRONOS_API WindowDestroyEvent : public Event {
     public:
         WindowDestroyEvent() {}
