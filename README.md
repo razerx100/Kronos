@@ -6,10 +6,9 @@ Game engine (Under development).
 2: make (For building on Linux).\
 3: Visual Studio 2019 (For building on Windows).
 
-# External Libraries
-1: spdlog.\
-2: Dear ImGui.\
-3: DirectXMath.
+# Libraries used
+1: Dear ImGui.\
+2: DirectXMath.
 
 # Instructions
 First clone the repository. Now follow either of the steps below.

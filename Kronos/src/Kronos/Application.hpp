@@ -16,6 +16,7 @@ namespace Kronos {
 		static Application* s_Instance;
         Window* m_Window;
 		ImGuiLayer* m_ImGuiLayer;
+		LogLayer* m_LogOverlay;
 		bool m_Running;
 		LayerStack m_LayerStack;
 

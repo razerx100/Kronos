@@ -1,11 +1,7 @@
-include_directories(../Kronos/vendor/spdlog/include ../Kronos/src ../Kronos/vendor/imgui ../Kronos/vendor/DirectXMath/Inc)
+include_directories(../Kronos/src ../Kronos/vendor/imgui ../Kronos/vendor/DirectXMath/Inc)
 
 if(PLATFORM STREQUAL "Windows")
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-		add_executable(KEditor src/KronosEditor.cpp resources/KRONOS.ico resources/Kronos.rc)
-	else()
-		add_executable(KEditor WIN32 src/KronosEditor.cpp resources/KRONOS.ico resources/Kronos.rc)
-	endif()
+	add_executable(KEditor WIN32 src/KronosEditor.cpp resources/KRONOS.ico resources/Kronos.rc)
 	set_target_properties(KEditor PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${PLATFORM}")
 else()
 	add_executable(KEditor src/KronosEditor.cpp)

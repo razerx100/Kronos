@@ -4,9 +4,18 @@ public:
 	ExampleLayer() : Layer("Hello") {}
 
 	void OnImGuiRender() override {
-		ImGui::Begin("Hello World");
-		ImGui::Text("OKay");
-		ImGui::End();
+		static bool show = true;
+
+		if (show) {
+			ImGui::Begin("Hello World", &show);
+			ImGui::Text("OKay");
+			ImGui::End();
+		}
+	}
+
+	void OnUpdate() override {
+		if (Kronos::InputManager::isKeyPressed(Kronos::KeyCode::Tab))
+			KR_TRACE("Tab is pressed %d.\n", 5);
 	}
 };
 class KEditor : public Kronos::Application {
