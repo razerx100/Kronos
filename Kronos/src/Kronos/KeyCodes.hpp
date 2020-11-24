@@ -2,7 +2,7 @@
 #define __KEY_CODES_HPP__
 #include<Kronos/Core.hpp>
 namespace Kronos {
-	struct KRONOS_API KeyCode {
+	struct KeyCode {
 		static const short LMB;
 		static const short RMB;
 		static const short MMB;

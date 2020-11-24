@@ -4,7 +4,7 @@
 #include"imgui.h"
 #include"Layer.hpp"
 namespace Kronos {
-	class KRONOS_API Log {
+	class Log {
         friend class LogLayer;
     private:
         static ImGuiTextBuffer     Buf;
@@ -20,7 +20,7 @@ namespace Kronos {
         static void AddLog(const char* fmt, ...) IM_FMTARGS(2);
 	};
 
-    class KRONOS_API LogLayer : public Layer {
+    class LogLayer : public Layer {
     public:
         LogLayer() : Layer("Log Window") { }
 

@@ -13,7 +13,7 @@ namespace Kronos{
         ) : Title(title), Width(width), Height(height) {}
     };
 
-    class KRONOS_API Window {
+    class Window {
     public:
         using EventCallbackFunc = std::function<void(Event&)>;
 

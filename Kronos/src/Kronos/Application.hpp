@@ -11,7 +11,7 @@
 #include "Log.hpp"
 
 namespace Kronos {
-	class KRONOS_API Application {
+	class Application {
     private:
 		static Application* s_Instance;
         Window* m_Window;

@@ -3,7 +3,7 @@
 #include <vector>
 #include "Layer.hpp"
 namespace Kronos {
-	class KRONOS_API LayerStack {
+	class LayerStack {
 	private:
 		std::vector<Layer*> m_Layers;
 		std::vector<Layer*> m_Overlays;

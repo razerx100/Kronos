@@ -4,7 +4,7 @@
 #include "Events/Event.hpp"
 #include "imgui.h"
 namespace Kronos {
-	class KRONOS_API Layer {
+	class Layer {
 	protected:
 		std::string m_DebugName;
 	public:

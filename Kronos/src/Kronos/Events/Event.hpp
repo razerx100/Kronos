@@ -32,7 +32,7 @@ namespace Kronos {
 
     #define EVENT_CLASS_CATEGORY(category) virtual int GetCategory() const override { return category; }
 
-    class KRONOS_API Event {
+    class Event {
 		friend class EventDispatcher;
 	public:
 		bool handled = false;

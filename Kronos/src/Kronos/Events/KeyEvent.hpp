@@ -2,7 +2,7 @@
 #define __KEY_EVENT_HPP__
 #include"Event.hpp"
 namespace Kronos{
-    class KRONOS_API KeyEvent : public Event{
+    class KeyEvent : public Event{
     protected:
         int m_keycode;
         KeyEvent(int keycode) : m_keycode(keycode) {}
@@ -12,7 +12,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
     };
 
-    class KRONOS_API KeyPressedEvent : public KeyEvent{
+    class KeyPressedEvent : public KeyEvent{
     public:
         KeyPressedEvent(int keycode) : KeyEvent(keycode) {}
 
@@ -25,7 +25,7 @@ namespace Kronos{
         EVENT_CLASS_TYPE(KeyPressed)
     };
 
-    class KRONOS_API KeyReleasedEvent : public KeyEvent {
+    class KeyReleasedEvent : public KeyEvent {
     public:
         KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
         std::string ToString() const override{
@@ -37,7 +37,7 @@ namespace Kronos{
         EVENT_CLASS_TYPE(KeyReleased)
     };
 
-    class KRONOS_API KeyTypedEvent : public KeyEvent {
+    class KeyTypedEvent : public KeyEvent {
     public:
         KeyTypedEvent(int keycode) : KeyEvent(keycode) {}
         std::string ToString() const override{

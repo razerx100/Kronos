@@ -13,7 +13,7 @@ namespace Kronos {
 	    ID3D12CommandAllocator* CommandAllocator;
 		UINT64                  FenceValue;
 	};
-	class KRONOS_API ImGuiLayer : public Layer {
+	class ImGuiLayer : public Layer {
 	private:
 		static int const             NUM_FRAMES_IN_FLIGHT = 3;
 		FrameContext                 g_frameContext[NUM_FRAMES_IN_FLIGHT];

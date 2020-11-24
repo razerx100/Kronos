@@ -4,7 +4,7 @@
 #include<Kronos/Application.hpp>
 #include<utility>
 namespace Kronos {
-	class KRONOS_API InputManager {
+	class InputManager {
 	private:
 		static std::pair<float, float> m_MousePosition;
 	public:

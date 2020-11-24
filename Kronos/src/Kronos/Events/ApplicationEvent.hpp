@@ -2,7 +2,7 @@
 #define __APPLICATION_EVENT_HPP__
 #include"Event.hpp"
 namespace Kronos{
-    class KRONOS_API WindowResizeEvent : public Event {
+    class WindowResizeEvent : public Event {
     private:
         unsigned int m_width, m_height, m_state;
     public:
@@ -23,7 +23,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class KRONOS_API WindowCloseEvent : public Event {
+    class WindowCloseEvent : public Event {
     public:
         WindowCloseEvent() {}
 
@@ -31,7 +31,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class KRONOS_API WindowMovedEvent : public Event {
+    class WindowMovedEvent : public Event {
     public:
         WindowMovedEvent() {}
 
@@ -39,7 +39,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class KRONOS_API WindowDestroyEvent : public Event {
+    class WindowDestroyEvent : public Event {
     public:
         WindowDestroyEvent() {}
 
@@ -47,7 +47,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class KRONOS_API DeviceChangedEvent : public Event {
+    class DeviceChangedEvent : public Event {
     private:
         unsigned int m_EventData;
     public:
@@ -64,7 +64,7 @@ namespace Kronos{
         EVENT_CLASS_TYPE(DeviceChanged)
     };
 
-    class KRONOS_API AppTickEvent : public Event {
+    class AppTickEvent : public Event {
     public:
         AppTickEvent() {}
 
@@ -72,7 +72,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class KRONOS_API AppUpdateEvent : public Event {
+    class AppUpdateEvent : public Event {
     public:
         AppUpdateEvent() {}
 
@@ -80,7 +80,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class KRONOS_API AppRenderEvent : public Event {
+    class AppRenderEvent : public Event {
     public:
         AppRenderEvent() {}
 

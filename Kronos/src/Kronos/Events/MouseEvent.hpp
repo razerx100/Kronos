@@ -2,7 +2,7 @@
 #define __MOUSE_EVENT_HPP__
 #include"Event.hpp"
 namespace Kronos{
-    class KRONOS_API MouseMovedEvent : public Event {
+    class MouseMovedEvent : public Event {
     private:
         float m_mouseX, m_mouseY;
     public:
@@ -21,7 +21,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     };
 
-    class KRONOS_API MouseScrolledEvent : public Event {
+    class MouseScrolledEvent : public Event {
     private:
         float m_xOffset, m_yOffset;
     public:
@@ -40,7 +40,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     };
 
-    class KRONOS_API MouseButtonEvent : public Event {
+    class MouseButtonEvent : public Event {
     protected:
         int m_button;
         MouseButtonEvent(int button) : m_button(button) {}
@@ -50,7 +50,7 @@ namespace Kronos{
         EVENT_CLASS_CATEGORY(EventCategoryMouseButton | EventCategoryMouse | EventCategoryInput)
     };
 
-    class KRONOS_API MouseButtonPressedEvent : public MouseButtonEvent {
+    class MouseButtonPressedEvent : public MouseButtonEvent {
     public:
         MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
@@ -63,7 +63,7 @@ namespace Kronos{
         EVENT_CLASS_TYPE(MouseButtonPressed)
     };
 
-    class KRONOS_API MouseButtonReleasedEvent : public MouseButtonEvent {
+    class MouseButtonReleasedEvent : public MouseButtonEvent {
     public:
         MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
