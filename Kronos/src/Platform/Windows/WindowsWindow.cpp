@@ -2,7 +2,8 @@
 #include"Kronos/Events/ApplicationEvent.hpp"
 #include"Kronos/Events/KeyEvent.hpp"
 #include"Kronos/Events/MouseEvent.hpp"
-#include"Platform/Windows/resources/resource.hpp"
+#include"Windows/resources/resource.hpp"
+#include"Windows/DirectX12/Dx12Renderer.hpp"
 
 namespace Kronos {
     Window* Window::Create(const WindowProps& props){
@@ -10,13 +11,14 @@ namespace Kronos {
     }
 
     WindowsWindow::WindowsWindow(const WindowProps& props)
-        : wc{} {
+        : m_wc{}, m_renderer(nullptr) {
         Init(props);
-        ZeroMemory(&msg, sizeof(msg));
+        ZeroMemory(&m_msg, sizeof(m_msg));
     }
 
     WindowsWindow::~WindowsWindow(){
-        ::UnregisterClass(wc.lpszClassName, wc.hInstance);
+        ::UnregisterClass(m_wc.lpszClassName, m_wc.hInstance);
+        delete m_renderer;
     }
 
     void WindowsWindow::Init(const WindowProps& props){
@@ -24,15 +26,20 @@ namespace Kronos {
         m_Data.Height = props.Height;
         m_Data.Width = props.Width;
 
-        wc.cbSize = sizeof(WNDCLASSEX);
-        wc.style = CS_CLASSDC;
-        wc.lpfnWndProc = WindowProc;
-        wc.hInstance = GetModuleHandle(0);
-        wc.lpszClassName = props.Title.c_str();
-        wc.hIcon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON));
-        wc.hIconSm = (HICON)LoadImage(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON), IMAGE_ICON, 16, 16, 0);
+        m_renderer = new DxRenderer(m_Data.Width, m_Data.Height, m_Data.Title);
 
-        RegisterClassEx(&wc);
+        m_wc.cbSize = sizeof(WNDCLASSEX);
+        m_wc.style = CS_HREDRAW | CS_VREDRAW;
+        m_wc.lpfnWndProc = WindowProc;
+        m_wc.hInstance = GetModuleHandle(0);
+        m_wc.lpszClassName = props.Title.c_str();
+        m_wc.hIcon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON));
+        m_wc.hIconSm = (HICON)LoadImage(GetModuleHandle(0), MAKEINTRESOURCE(IDI_APP_ICON), IMAGE_ICON, 16, 16, 0);
+
+        RegisterClassEx(&m_wc);
+
+        RECT windowRect = {0, 0, static_cast<LONG>(m_Data.Width), static_cast<LONG>(m_Data.Height)};
+        AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
         m_Hwnd = CreateWindowEx(
             0,
@@ -41,29 +48,32 @@ namespace Kronos {
             WS_OVERLAPPEDWINDOW,
 
             CW_USEDEFAULT, CW_USEDEFAULT,
-            props.Width,
-            props.Height,
-            NULL, NULL, wc.hInstance, this
+            windowRect.right - windowRect.left,
+            windowRect.bottom - windowRect.top,
+            NULL, NULL, m_wc.hInstance, this
         );
     }
 
     void WindowsWindow::Show() {
+        m_renderer->OnInit();
         ::ShowWindow(m_Hwnd, SW_SHOWNORMAL);
         ::UpdateWindow(m_Hwnd);
     }
 
     void WindowsWindow::Close() {
+        m_renderer->OnDestroy();
         ::DestroyWindow(m_Hwnd);
     }
 
     void WindowsWindow::OnUpdate(){
-        while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE)) {
-			::TranslateMessage(&msg);
-			::DispatchMessageA(&msg);
+        while (::PeekMessage(&m_msg, NULL, 0U, 0U, PM_REMOVE)) {
+			::TranslateMessage(&m_msg);
+			::DispatchMessageA(&m_msg);
 		}
     }
 
-    LRESULT WindowsWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data) {
+    LRESULT WindowsWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowsWindow *window) {
+        WindowData data = window->m_Data;
         switch (uMsg)
         {
         //Application events
@@ -96,11 +106,14 @@ namespace Kronos {
         return 0;
         case WM_PAINT:
         {
-
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(m_Hwnd, &ps);
             FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
             EndPaint(m_Hwnd, &ps);
+            if (window->m_renderer) {
+                window->m_renderer->OnUpdate();
+                window->m_renderer->OnRender();
+            }
         }
         return 0;
         //Keyboard key events
@@ -219,7 +232,7 @@ namespace Kronos {
             pThis = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
         }
         if (pThis) {
-            return pThis->HandleMessage(uMsg, wParam, lParam, pThis->m_Data);
+            return pThis->HandleMessage(uMsg, wParam, lParam, pThis);
         }
         else {
             return DefWindowProc(hwnd, uMsg, wParam, lParam);

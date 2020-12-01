@@ -1,11 +1,10 @@
 #ifndef __CORE_HPP__
 #define __CORE_HPP__
-	#ifdef KR_PLATFORM_WINDOWS
-		#include<Windows.h>
+	//#ifdef KR_PLATFORM_WINDOWS
     //#elif KR_PLATFORM_LINUX
-	#else
-	#error NOT CORRECTLY DEFINED
-	#endif
+	//#else
+	//#error NOT CORRECTLY DEFINED
+	//#endif
 
 	#define BIT(x) (1 << x)
 

@@ -1,5 +1,5 @@
 #include "Application.hpp"
-#include"Platform/Windows/ImGui/ImGuiLayer.hpp"
+#include"Windows/ImGui/ImGuiLayer.hpp"
 #include"KeyCodes.hpp"
 #include"InputManager.hpp"
 
@@ -14,9 +14,6 @@ namespace Kronos {
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
-
-		m_LogOverlay = new LogLayer();
-		PushOverlay(m_LogOverlay);
 	}
 	Application::~Application() {
         delete m_Window;

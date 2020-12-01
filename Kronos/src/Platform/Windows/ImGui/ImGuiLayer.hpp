@@ -1,8 +1,7 @@
 #ifndef __IMGUI_LAYER_HPP__
 #define __IMGUI_LAYER_HPP__
 #include<Kronos/Layer.hpp>
-#include<d3d12.h>
-#include<dxgi1_4.h>
+#include<Windows/stdafx.hpp>
 #include"imgui.h"
 #include"Kronos/Events/ApplicationEvent.hpp"
 #include"Kronos/Events/MouseEvent.hpp"

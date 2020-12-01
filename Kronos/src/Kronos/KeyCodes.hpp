@@ -1,6 +1,5 @@
 #ifndef __KEY_CODES_HPP__
 #define __KEY_CODES_HPP__
-#include<Kronos/Core.hpp>
 namespace Kronos {
 	struct KeyCode {
 		static const short LMB;

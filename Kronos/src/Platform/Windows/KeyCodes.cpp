@@ -1,5 +1,5 @@
 #include<Kronos/KeyCodes.hpp>
-#include<Windows.h>
+#include"Platform/Windows/stdafx.hpp"
 
 namespace Kronos {
 	//MOUSE KEYS

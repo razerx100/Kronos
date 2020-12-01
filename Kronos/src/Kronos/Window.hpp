@@ -26,8 +26,6 @@ namespace Kronos{
 
         virtual void SetEventCallback(const EventCallbackFunc& callback) = 0;
 
-        virtual void SetVSync(bool enabled) {}
-        virtual bool IsVSynced() const { return true; }
         virtual void Show() {}
         virtual void Close() {}
 

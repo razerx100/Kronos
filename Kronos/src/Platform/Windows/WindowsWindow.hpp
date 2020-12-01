@@ -1,11 +1,12 @@
 #ifndef __WINDOWS_WINDOW_HPP__
 #define __WINDOWS_WINDOW_HPP__
 #include<Kronos/Window.hpp>
+#include"stdafx.hpp"
+#include"Windows/DirectX12/Dx12Renderer.hpp"
 namespace Kronos{
     class WindowsWindow : public Window {
     private:
-        class WindowData{
-        public:
+        struct WindowData {
             std::string Title;
             unsigned int Width, Height;
             bool VSync;
@@ -17,11 +18,12 @@ namespace Kronos{
 
     private:
         void Init(const WindowProps& props);
-        LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data);
+        LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowsWindow *window);
 
         HWND m_Hwnd;
-        MSG msg;
-        WNDCLASSEX wc;
+        MSG m_msg;
+        WNDCLASSEX m_wc;
+        DxRenderer* m_renderer;
 
     public:
         WindowsWindow(const WindowProps& props);

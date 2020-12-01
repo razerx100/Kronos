@@ -7,7 +7,7 @@
 #include "Events/ApplicationEvent.hpp"
 #include "Events/KeyEvent.hpp"
 #include "Events/MouseEvent.hpp"
-#include "Platform/Windows/ImGui/ImGuiLayer.hpp"
+#include "Windows/ImGui/ImGuiLayer.hpp"
 #include "Log.hpp"
 
 namespace Kronos {
@@ -16,7 +16,6 @@ namespace Kronos {
 		static Application* s_Instance;
         Window* m_Window;
 		ImGuiLayer* m_ImGuiLayer;
-		LogLayer* m_LogOverlay;
 		bool m_Running;
 		LayerStack m_LayerStack;
 

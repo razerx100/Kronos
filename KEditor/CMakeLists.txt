@@ -1,4 +1,4 @@
-include_directories(../Kronos/src ../Kronos/vendor/imgui ../Kronos/vendor/DirectXMath/Inc)
+include_directories(../Kronos/src ../Kronos/vendor/imgui ../Kronos/vendor/DirectXMath/Inc ../Kronos/src/Platform)
 
 if(PLATFORM STREQUAL "Windows")
 	add_executable(KEditor WIN32 src/KronosEditor.cpp resources/KRONOS.ico resources/Kronos.rc)

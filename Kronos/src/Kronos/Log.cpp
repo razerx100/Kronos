@@ -5,16 +5,6 @@ namespace Kronos {
     ImVector<int>       Log::LineOffsets;
 	bool                Log::AutoScroll = true;
 
-    void LogLayer::OnImGuiRender() {
-        static bool show = true;
-        if(show)
-            Log::Draw("Log", &show);
-    }
-
-    void LogLayer::OnAttach() {
-        Log::Init();
-    }
-
 	void Log::Init() {
         Clear();
 	}
