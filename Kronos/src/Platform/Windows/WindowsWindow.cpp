@@ -10,6 +10,8 @@ namespace Kronos {
         return new WindowsWindow(props);
     }
 
+    HWND WindowsWindow::s_Hwnd = nullptr;
+
     WindowsWindow::WindowsWindow(const WindowProps& props)
         : m_wc{}, m_renderer(nullptr) {
         Init(props);
@@ -41,7 +43,7 @@ namespace Kronos {
         RECT windowRect = {0, 0, static_cast<LONG>(m_Data.Width), static_cast<LONG>(m_Data.Height)};
         AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-        m_Hwnd = CreateWindowEx(
+        s_Hwnd = CreateWindowEx(
             0,
             props.Title.c_str(),
             props.Title.c_str(),
@@ -52,17 +54,18 @@ namespace Kronos {
             windowRect.bottom - windowRect.top,
             NULL, NULL, m_wc.hInstance, this
         );
+
+        m_renderer->OnInit();
     }
 
     void WindowsWindow::Show() {
-        m_renderer->OnInit();
-        ::ShowWindow(m_Hwnd, SW_SHOWNORMAL);
-        ::UpdateWindow(m_Hwnd);
+        ::ShowWindow(s_Hwnd, SW_SHOWNORMAL);
+        ::UpdateWindow(s_Hwnd);
     }
 
     void WindowsWindow::Close() {
         m_renderer->OnDestroy();
-        ::DestroyWindow(m_Hwnd);
+        ::DestroyWindow(s_Hwnd);
     }
 
     void WindowsWindow::OnUpdate(){
@@ -106,10 +109,10 @@ namespace Kronos {
         return 0;
         case WM_PAINT:
         {
-            PAINTSTRUCT ps;
+            /*PAINTSTRUCT ps;
             HDC hdc = BeginPaint(m_Hwnd, &ps);
             FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-            EndPaint(m_Hwnd, &ps);
+            EndPaint(m_Hwnd, &ps);*/
             if (window->m_renderer) {
                 window->m_renderer->OnUpdate();
                 window->m_renderer->OnRender();
@@ -211,7 +214,7 @@ namespace Kronos {
         }
         return 0;
         default:
-            return DefWindowProc(m_Hwnd, uMsg, wParam, lParam);
+            return DefWindowProc(s_Hwnd, uMsg, wParam, lParam);
         }
         return true;
     }
@@ -226,7 +229,7 @@ namespace Kronos {
             pThis = reinterpret_cast<WindowsWindow*>(pCreate->lpCreateParams);
             SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pThis));
 
-            pThis->m_Hwnd = hwnd;
+            pThis->s_Hwnd = hwnd;
         }
         else {
             pThis = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));

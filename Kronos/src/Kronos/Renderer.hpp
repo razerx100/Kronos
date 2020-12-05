@@ -3,9 +3,8 @@
 #include <string>
 namespace Kronos {
 	class Renderer {
-	private:
-		std::string m_title;
 	protected:
+		std::string m_title;
 		std::wstring m_assetsPath;
 		unsigned int m_width, m_height;
 		float m_aspectRatio;

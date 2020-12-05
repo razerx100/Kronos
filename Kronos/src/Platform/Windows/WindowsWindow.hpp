@@ -20,7 +20,7 @@ namespace Kronos{
         void Init(const WindowProps& props);
         LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowsWindow *window);
 
-        HWND m_Hwnd;
+        static HWND s_Hwnd;
         MSG m_msg;
         WNDCLASSEX m_wc;
         DxRenderer* m_renderer;
@@ -32,7 +32,7 @@ namespace Kronos{
         inline unsigned int GetWidth() const override { return m_Data.Width; }
         inline unsigned int GetHeight() const override { return m_Data.Height; }
         inline void SetEventCallback(const EventCallbackFunc& callback) override { m_Data.EventCallback = callback; }
-        inline HWND GetHWND() const { return m_Hwnd; }
+        inline static HWND GetHWND() { return s_Hwnd; }
 
         void OnUpdate() override;
         void Show() override;

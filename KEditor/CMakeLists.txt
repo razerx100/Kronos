@@ -8,3 +8,8 @@ else()
 	set_target_properties(KEditor PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${PLATFORM}/${CMAKE_BUILD_TYPE}")
 endif()
 target_link_libraries(KEditor Kronos)
+add_custom_command(
+	TARGET KEditor POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/KEditor/resources/Shaders/ ${CMAKE_BINARY_DIR}/bin/${PLATFORM}/${CMAKE_BUILD_TYPE}/
+)

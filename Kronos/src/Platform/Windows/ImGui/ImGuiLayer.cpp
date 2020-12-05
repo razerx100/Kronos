@@ -8,7 +8,7 @@
 #pragma comment(lib, "DXGI.lib") // DXGI Lib link
 #pragma comment(lib, "d3d12.lib") // Dx12 Lib link
 
-#ifdef KR_BUILD_DEBUG
+#if defined(_DEBUG)
 #define DX12_ENABLE_DEBUG_LAYER
 #endif
 
@@ -31,7 +31,7 @@ namespace Kronos {
     }
 
 	void ImGuiLayer::OnAttach() {
-        m_hwnd = (reinterpret_cast<WindowsWindow*>(Application::GetApp().GetWindow()))->GetHWND();
+        m_hwnd = WindowsWindow::GetHWND();
 
         if (!CreateDeviceD3D(m_hwnd)){
             CleanupDeviceD3D();
