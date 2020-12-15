@@ -21,6 +21,6 @@ endif()
 
 add_subdirectory(Kronos/vendor/imgui)
 add_subdirectory(Kronos)
-add_subdirectory(KEditor)
+add_subdirectory(KApp)
 
-set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT KEditor)
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT KApp)

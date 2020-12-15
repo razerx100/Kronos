@@ -1,7 +1,7 @@
 #ifndef __WINDOWS_WINDOW_HPP__
 #define __WINDOWS_WINDOW_HPP__
 #include<Kronos/Window.hpp>
-#include"stdafx.hpp"
+#include"Windows/stdafx.hpp"
 #include"Windows/DirectX12/Dx12Renderer.hpp"
 namespace Kronos{
     class WindowsWindow : public Window {

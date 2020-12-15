@@ -1,7 +1,11 @@
 #include "Dx12Renderer.hpp"
 #include "DxHelper.hpp"
 #include "Kronos/Application.hpp"
-#include "Platform/Windows/WindowsWindow.hpp"
+#include "Windows/WindowsWindow.hpp"
+
+#pragma comment(lib, "DXGI.lib") // DXGI Lib link
+#pragma comment(lib, "d3d12.lib") // Dx12 Lib link
+#pragma comment(lib, "d3dcompiler.lib") // DxCompiler Lib link
 
 namespace Kronos {
 	DxRenderer::DxRenderer(unsigned int width, unsigned int height, std::string title)
