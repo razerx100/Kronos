@@ -4,6 +4,7 @@
 #include"Kronos/Events/MouseEvent.hpp"
 #include"Windows/resources/resource.hpp"
 #include"Windows/DirectX12/Dx12Renderer.hpp"
+#include"Kronos/Log.hpp"
 
 namespace Kronos {
     Window* Window::Create(const WindowProps& props){
@@ -109,14 +110,13 @@ namespace Kronos {
         return 0;
         case WM_PAINT:
         {
-            /*PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(m_Hwnd, &ps);
-            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-            EndPaint(m_Hwnd, &ps);*/
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(s_Hwnd, &ps);
             if (window->m_renderer) {
                 window->m_renderer->OnUpdate();
                 window->m_renderer->OnRender();
             }
+            EndPaint(s_Hwnd, &ps);
         }
         return 0;
         //Keyboard key events

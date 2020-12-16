@@ -1,7 +1,6 @@
 #ifndef __INPUT_MANAGER_HPP__
 #define __INPUT_MANAGER_HPP__
 #include<Kronos/Core.hpp>
-#include<Kronos/Application.hpp>
 #include<utility>
 namespace Kronos {
 	class InputManager {

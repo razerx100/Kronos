@@ -2,7 +2,6 @@
 #define __LAYER_HPP__
 #include "Core.hpp"
 #include "Events/Event.hpp"
-#include "imgui.h"
 namespace Kronos {
 	class Layer {
 	protected:

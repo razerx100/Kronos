@@ -1,5 +1,4 @@
 #include "Application.hpp"
-#include"Windows/ImGui/ImGuiLayer.hpp"
 #include"KeyCodes.hpp"
 #include"InputManager.hpp"
 
@@ -11,10 +10,6 @@ namespace Kronos {
         m_Window = Window::Create(WindowProps("KEditor"));
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_Window->Show();
-
-		/*m_ImGuiLayer = new ImGuiLayer();
-		PushOverlay(m_ImGuiLayer);*/
-		m_ImGuiLayer = nullptr;
 	}
 	Application::~Application() {
         delete m_Window;
@@ -23,9 +18,6 @@ namespace Kronos {
 		while(m_Running){
 			m_LayerStack.for_each([](Layer* layer) { layer->OnUpdate(); });
 
-			/*m_ImGuiLayer->Begin();
-			m_LayerStack.for_each([](Layer* layer) { layer->OnImGuiRender(); });
-			m_ImGuiLayer->End();*/
             m_Window->OnUpdate();
 		}
 	}

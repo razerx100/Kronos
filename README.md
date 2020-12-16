@@ -7,7 +7,7 @@ Game engine (Under development).
 3: Visual Studio 2019 (For building on Windows).
 
 # Libraries used
-1: Dear ImGui.\
+1: spdlog.\
 2: DirectXMath.
 
 # Instructions
