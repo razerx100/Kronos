@@ -3,8 +3,9 @@
 #include"Kronos/Events/KeyEvent.hpp"
 #include"Kronos/Events/MouseEvent.hpp"
 #include"Windows/resources/resource.hpp"
-#include"Windows/DirectX12/Dx12Renderer.hpp"
 #include"Kronos/Log.hpp"
+#include"DirectX12/Dx12Context.hpp"
+#include"DirectX12/DxShader.hpp"
 
 namespace Kronos {
     Window* Window::Create(const WindowProps& props){
@@ -14,22 +15,19 @@ namespace Kronos {
     HWND WindowsWindow::s_Hwnd = nullptr;
 
     WindowsWindow::WindowsWindow(const WindowProps& props)
-        : m_wc{}, m_renderer(nullptr) {
+        : m_wc{} {
         Init(props);
         ZeroMemory(&m_msg, sizeof(m_msg));
     }
 
     WindowsWindow::~WindowsWindow(){
         ::UnregisterClass(m_wc.lpszClassName, m_wc.hInstance);
-        delete m_renderer;
     }
 
     void WindowsWindow::Init(const WindowProps& props){
         m_Data.Title = props.Title;
         m_Data.Height = props.Height;
         m_Data.Width = props.Width;
-
-        m_renderer = new DxRenderer(m_Data.Width, m_Data.Height, m_Data.Title);
 
         m_wc.cbSize = sizeof(WNDCLASSEX);
         m_wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -56,7 +54,8 @@ namespace Kronos {
             NULL, NULL, m_wc.hInstance, this
         );
 
-        m_renderer->OnInit();
+        GraphicsContext::CreateContext(m_Data.Width, m_Data.Height);
+        GraphicsContext::GetDirectXContext()->GetShaderObject()->LoadAssets();
     }
 
     void WindowsWindow::Show() {
@@ -65,7 +64,7 @@ namespace Kronos {
     }
 
     void WindowsWindow::Close() {
-        m_renderer->OnDestroy();
+        GraphicsContext::CleanUpContext();
         ::DestroyWindow(s_Hwnd);
     }
 
@@ -112,10 +111,8 @@ namespace Kronos {
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(s_Hwnd, &ps);
-            if (window->m_renderer) {
-                window->m_renderer->OnUpdate();
-                window->m_renderer->OnRender();
-            }
+            if (GraphicsContext::GetGraphicsContext())
+                GraphicsContext::SwapBuffers();
             EndPaint(s_Hwnd, &ps);
         }
         return 0;

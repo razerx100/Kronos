@@ -2,7 +2,6 @@
 #define __WINDOWS_WINDOW_HPP__
 #include<Kronos/Window.hpp>
 #include"Windows/stdafx.hpp"
-#include"Windows/DirectX12/Dx12Renderer.hpp"
 namespace Kronos{
     class WindowsWindow : public Window {
     private:
@@ -23,7 +22,6 @@ namespace Kronos{
         static HWND s_Hwnd;
         MSG m_msg;
         WNDCLASSEX m_wc;
-        DxRenderer* m_renderer;
 
     public:
         WindowsWindow(const WindowProps& props);

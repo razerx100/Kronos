@@ -5,17 +5,11 @@ namespace Kronos {
 	class Renderer {
 	protected:
 		std::string m_title;
-		std::wstring m_assetsPath;
 		unsigned int m_width, m_height;
-		float m_aspectRatio;
 
-		inline std::wstring GetAssetFullPath(wchar_t* assetName) {
-			return m_assetsPath + assetName;
-		}
 	public:
 		Renderer(unsigned int width, unsigned int height, std::string name)
 			: m_width(width), m_height(height), m_title(name) {
-			m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 		}
 		virtual ~Renderer() {}
 
