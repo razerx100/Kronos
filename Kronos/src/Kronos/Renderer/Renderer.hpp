@@ -9,16 +9,13 @@ namespace Kronos {
 
 	public:
 		Renderer(unsigned int width, unsigned int height, std::string name)
-			: m_width(width), m_height(height), m_title(name) {
-		}
+			: m_width(width), m_height(height), m_title(name) { }
 		virtual ~Renderer() {}
 
 		virtual void OnInit() = 0;
 		virtual void OnUpdate() = 0;
 		virtual void OnRender() = 0;
 		virtual void OnDestroy() = 0;
-
-		virtual void GetAssetsPath() = 0;
 
 		inline unsigned int GetWidth() const { return m_width; }
 		inline unsigned int GetHeight() const { return m_height; }

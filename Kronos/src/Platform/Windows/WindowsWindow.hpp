@@ -1,6 +1,7 @@
 #ifndef __WINDOWS_WINDOW_HPP__
 #define __WINDOWS_WINDOW_HPP__
 #include<Kronos/Window.hpp>
+#include<Kronos/Renderer/Renderer.hpp>
 #include"Windows/stdafx.hpp"
 namespace Kronos{
     class WindowsWindow : public Window {
@@ -17,7 +18,9 @@ namespace Kronos{
 
     private:
         void Init(const WindowProps& props);
-        LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowsWindow *window);
+        LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data);
+
+        Renderer* renderer;
 
         static HWND s_Hwnd;
         MSG m_msg;

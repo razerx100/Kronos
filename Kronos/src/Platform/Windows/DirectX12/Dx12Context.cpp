@@ -2,6 +2,7 @@
 #include "DxHelper.hpp"
 #include "Kronos/Application.hpp"
 #include "Windows/WindowsWindow.hpp"
+#include "DxShader.hpp"
 
 #pragma comment(lib, "DXGI.lib") // DXGI Lib link
 #pragma comment(lib, "d3d12.lib") // Dx12 Lib link
@@ -13,9 +14,11 @@ namespace Kronos {
 		m_frameIndex(0),
 		m_viewport(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height)),
 		m_scissorRect(0, 0, static_cast<LONG>(width), static_cast<LONG>(height)),
-		m_rtvDescriptorSize(0), shaderAsset(nullptr) {
-		shaderAsset = new DxShader(width, height);
+		m_rtvDescriptorSize(0), m_vertexBuffferView(nullptr) {
 		LoadPipeline();
+		CreateRootSignature();
+		CreateCommandList();
+		CreateSyncObjects();
 	}
 	Dx12Context::~Dx12Context() {
 		// Ensure that the GPU is no longer referencing resources that are about to be
@@ -23,7 +26,6 @@ namespace Kronos {
 		WaitForPreviousFrame();
 
 		CloseHandle(m_fenceEvent);
-		delete shaderAsset;
 	}
 	void Dx12Context::swapBuffers() {
 		//Record all the commands we need to render the scene into command list.
@@ -40,7 +42,10 @@ namespace Kronos {
 	}
 	void GraphicsContext::CreateContext(unsigned int width, unsigned int height) {
 		s_Context = new Dx12Context(width, height);
+		s_shaderAsset = new DxShader();
 	}
+
+
 	_Use_decl_annotations_
 	void Dx12Context::GetHardWareAdapter(
 			IDXGIFactory1* pFactory,
@@ -252,7 +257,11 @@ namespace Kronos {
 		);
 		m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 		// Record Commands
-		shaderAsset->RecordCommands(m_commandList, rtvHandle);
+		const float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+		m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+		m_commandList->IASetPrimitiveTopology(m_primitive);
+		m_commandList->IASetVertexBuffers(0, 1, m_vertexBuffferView);
+		m_commandList->DrawInstanced(3, 1, 0, 0);
 		// Indicate that the back buffer will now be used to present.
 		m_commandList->ResourceBarrier(1,
 				&CD3DX12_RESOURCE_BARRIER::Transition(

@@ -9,6 +9,22 @@ namespace Kronos {
 	using namespace DirectX;
 	using Microsoft::WRL::ComPtr;
 	class Dx12Context : public GraphicsContext {
+	public:
+		Dx12Context(UINT width, UINT height);
+		~Dx12Context();
+
+		void CreatePipelineState(D3D12_GRAPHICS_PIPELINE_STATE_DESC* psoDesc);
+
+		inline void SetVertexBufferView(
+			D3D12_VERTEX_BUFFER_VIEW* vertexBufferView
+		) { m_vertexBuffferView = vertexBufferView; }
+		inline void SetPrimitive(D3D_PRIMITIVE_TOPOLOGY primitive)
+		{ m_primitive = primitive; }
+
+		inline ComPtr<ID3D12Device> GetDevice() { return m_device; }
+		inline ComPtr<ID3D12RootSignature> GetRootSignature()
+		{ return m_rootSignature; }
+
 	private:
 		static const UINT FrameCount = 3;
 		UINT m_width, m_height;
@@ -34,8 +50,9 @@ namespace Kronos {
 		ComPtr<ID3D12Fence> m_fence;
 		UINT64 m_fenceValue;
 
-		DxShader* shaderAsset;
-
+		// Vertex buffer objects.
+		D3D12_VERTEX_BUFFER_VIEW* m_vertexBuffferView;
+		D3D_PRIMITIVE_TOPOLOGY m_primitive;
 
 		void ParseCommandLineArgs(_In_reads_(argc) WCHAR* argv[], int argc);
 
@@ -48,18 +65,9 @@ namespace Kronos {
 		void swapBuffers() override;
 		void PopulateCommandList();
 		void WaitForPreviousFrame();
-	public:
-		Dx12Context(UINT width, UINT height);
-		~Dx12Context();
-
 		void CreateRootSignature();
 		void CreateCommandList();
 		void CreateSyncObjects();
-		void CreatePipelineState(D3D12_GRAPHICS_PIPELINE_STATE_DESC* psoDesc);
-
-		inline DxShader* GetShaderObject() { return shaderAsset; }
-		inline ComPtr<ID3D12Device> GetDevice() { return m_device; }
-		inline ComPtr<ID3D12RootSignature> GetRootSignature() { return m_rootSignature; }
 	};
 }
 #endif

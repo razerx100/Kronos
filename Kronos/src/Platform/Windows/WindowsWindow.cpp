@@ -4,8 +4,7 @@
 #include"Kronos/Events/MouseEvent.hpp"
 #include"Windows/resources/resource.hpp"
 #include"Kronos/Log.hpp"
-#include"DirectX12/Dx12Context.hpp"
-#include"DirectX12/DxShader.hpp"
+#include"DirectX12/Dx12Renderer.hpp"
 
 namespace Kronos {
     Window* Window::Create(const WindowProps& props){
@@ -15,13 +14,14 @@ namespace Kronos {
     HWND WindowsWindow::s_Hwnd = nullptr;
 
     WindowsWindow::WindowsWindow(const WindowProps& props)
-        : m_wc{} {
+        : m_wc{}, renderer(new Dx12Renderer(props.Width, props.Height)) {
         Init(props);
         ZeroMemory(&m_msg, sizeof(m_msg));
     }
 
     WindowsWindow::~WindowsWindow(){
         ::UnregisterClass(m_wc.lpszClassName, m_wc.hInstance);
+        delete renderer;
     }
 
     void WindowsWindow::Init(const WindowProps& props){
@@ -54,8 +54,7 @@ namespace Kronos {
             NULL, NULL, m_wc.hInstance, this
         );
 
-        GraphicsContext::CreateContext(m_Data.Width, m_Data.Height);
-        GraphicsContext::GetDirectXContext()->GetShaderObject()->LoadAssets();
+        renderer->OnInit();
     }
 
     void WindowsWindow::Show() {
@@ -64,7 +63,7 @@ namespace Kronos {
     }
 
     void WindowsWindow::Close() {
-        GraphicsContext::CleanUpContext();
+        renderer->OnDestroy();
         ::DestroyWindow(s_Hwnd);
     }
 
@@ -75,8 +74,7 @@ namespace Kronos {
 		}
     }
 
-    LRESULT WindowsWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowsWindow *window) {
-        WindowData data = window->m_Data;
+    LRESULT WindowsWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data) {
         switch (uMsg)
         {
         //Application events
@@ -111,8 +109,7 @@ namespace Kronos {
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(s_Hwnd, &ps);
-            if (GraphicsContext::GetGraphicsContext())
-                GraphicsContext::SwapBuffers();
+            renderer->OnRender();
             EndPaint(s_Hwnd, &ps);
         }
         return 0;
@@ -232,7 +229,7 @@ namespace Kronos {
             pThis = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
         }
         if (pThis) {
-            return pThis->HandleMessage(uMsg, wParam, lParam, pThis);
+            return pThis->HandleMessage(uMsg, wParam, lParam, pThis->m_Data);
         }
         else {
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
