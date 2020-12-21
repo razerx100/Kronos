@@ -5,14 +5,18 @@
 namespace Kronos {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() : m_Running(true) {
+	Application::Application()
+		: m_Running(true), m_Renderer(nullptr) {
 		s_Instance = this;
-        m_Window = Window::Create(WindowProps("KEditor"));
+		WindowProps prop = WindowProps("KEditor");
+		m_Renderer = Renderer::Create(prop.Width, prop.Height);
+        m_Window = Window::Create(prop);
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_Window->Show();
 	}
 	Application::~Application() {
         delete m_Window;
+		delete m_Renderer;
 	}
 	void Application::Run() {
 		while(m_Running){

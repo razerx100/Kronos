@@ -4,6 +4,7 @@
 #include "Windows/DirectX12/DxShader.hpp"
 #include "Windows/stdafx.hpp"
 #include "Windows/DirectX12/Dx12Structs.hpp"
+#include "DirectXColors.h"
 
 namespace Kronos {
 	using namespace DirectX;
@@ -20,6 +21,9 @@ namespace Kronos {
 		) { m_vertexBuffferView = vertexBufferView; }
 		inline void SetPrimitive(D3D_PRIMITIVE_TOPOLOGY primitive)
 		{ m_primitive = primitive; }
+		inline void SetBackgroundColor(XMVECTORF32 color)
+		{ m_backgroundColor = color; }
+		// Set Background color
 
 		inline ComPtr<ID3D12Device> GetDevice() { return m_device; }
 		inline ComPtr<ID3D12RootSignature> GetRootSignature()
@@ -29,6 +33,7 @@ namespace Kronos {
 		static const UINT FrameCount = 3;
 		UINT m_width, m_height;
 		bool m_useWarpDevice;
+		XMVECTORF32 m_backgroundColor;
 
 		// Pipeline objects.
 		CD3DX12_VIEWPORT m_viewport;

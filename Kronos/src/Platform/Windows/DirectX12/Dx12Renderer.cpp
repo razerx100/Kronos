@@ -3,8 +3,9 @@
 #include "Windows/DirectX12/DxShader.hpp"
 #include "Kronos/Renderer/GraphicsContext.hpp"
 #include "Windows/DirectX12/DxHelper.hpp"
-#include "Kronos/Library/Vertex.hpp"
 #include "Kronos/Renderer/Shader.hpp"
+#include "DirectXColors.h"
+#include "Windows/WindowsWindow.hpp"
 
 #pragma comment(lib, "DXGI.lib") // DXGI Lib link
 #pragma comment(lib, "d3d12.lib") // Dx12 Lib link
@@ -13,6 +14,33 @@ namespace Kronos {
 	Dx12Renderer::Dx12Renderer(unsigned int width, unsigned int height)
 		: Renderer(width, height, "DirectX12") {
 		m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+
+		DirectX::XMVECTORF32 color = DirectX::Colors::AliceBlue;
+		m_triangleVertices.topPoint = {
+			{ 0.4f, 0.50f * m_aspectRatio, 0.0f }, color
+		};
+		m_triangleVertices.rightPoint = {
+			{ 0.65f, 0.00f * m_aspectRatio, 0.0f }, color
+		};
+		m_triangleVertices.leftPoint = {
+			{ 0.15f, 0.00f * m_aspectRatio, 0.0f }, color
+		};
+	}
+	// TEST FUNCTION. WILL REMOVE LATER.
+	void Dx12Renderer::ChangeTriangleColor(int& num) {
+		if (num) {
+			m_triangleVertices.ChangeColor(DirectX::Colors::BlanchedAlmond);
+			num = 0;
+		}
+		else {
+			m_triangleVertices.ChangeColor(DirectX::Colors::PaleVioletRed);
+			num = 1;
+		}
+		CreateVertexBuffer();
+		PostMessage(WindowsWindow::GetHWND(), WM_PAINT, 0, 0);
+	}
+	Renderer* Renderer::Create(unsigned int width, unsigned int height) {
+		return new Dx12Renderer(width, height);
 	}
 	Dx12Renderer::~Dx12Renderer() { }
 	void Dx12Renderer::OnInit() {
@@ -26,7 +54,6 @@ namespace Kronos {
 	void Dx12Renderer::OnRender() {
 		if (GraphicsContext::GetGraphicsContext()) {
 			Dx12Context* context = GraphicsContext::GetDirectXContext();
-			context->SetPrimitive(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			context->SetVertexBufferView(&m_vertexBufferView);
 			GraphicsContext::SwapBuffers();
 		}
@@ -37,14 +64,14 @@ namespace Kronos {
 	void Dx12Renderer::CreateVertexBuffer() {
 		// Create vertex buffer
 		// Define the geometry for a triangle.
-		Vertex triangleVertices[] =
+		/*Vertex triangleVertices[] =
 		{
-			{ { 0.0f, 0.25f * m_aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-			{ { 0.25f, -0.25f * m_aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-			{ { -0.25f, -0.25f * m_aspectRatio, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
-		};
+			{ { 0.4f, 0.50f * m_aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+			{ { 0.65f, 0.00f * m_aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+			{ { 0.15f, 0.00f * m_aspectRatio, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
+		};*/
 
-		const UINT vertexBufferSize = sizeof(triangleVertices);
+		const UINT vertexBufferSize = sizeof(m_triangleVertices);
 
 		// Note: using upload heaps to transfer static data like vert buffers is not
 		// recommended. Every time the GPU needs it, the upload heap will be marshalled
@@ -68,7 +95,7 @@ namespace Kronos {
 			0, &readRange,
 			reinterpret_cast<void**>(&pVertexDataBegin)
 		));
-		memcpy(pVertexDataBegin, triangleVertices, sizeof(triangleVertices));
+		memcpy(pVertexDataBegin, &m_triangleVertices, sizeof(m_triangleVertices));
 		m_vertexBuffer->Unmap(0, nullptr);
 
 		// Initialize the vertex buffer view.

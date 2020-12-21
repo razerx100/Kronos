@@ -5,6 +5,7 @@
 #include"Windows/resources/resource.hpp"
 #include"Kronos/Log.hpp"
 #include"DirectX12/Dx12Renderer.hpp"
+#include"Kronos/Application.hpp"
 
 namespace Kronos {
     Window* Window::Create(const WindowProps& props){
@@ -14,14 +15,13 @@ namespace Kronos {
     HWND WindowsWindow::s_Hwnd = nullptr;
 
     WindowsWindow::WindowsWindow(const WindowProps& props)
-        : m_wc{}, renderer(new Dx12Renderer(props.Width, props.Height)) {
+        : m_wc{} {
         Init(props);
         ZeroMemory(&m_msg, sizeof(m_msg));
     }
 
     WindowsWindow::~WindowsWindow(){
         ::UnregisterClass(m_wc.lpszClassName, m_wc.hInstance);
-        delete renderer;
     }
 
     void WindowsWindow::Init(const WindowProps& props){
@@ -54,7 +54,8 @@ namespace Kronos {
             NULL, NULL, m_wc.hInstance, this
         );
 
-        renderer->OnInit();
+        Application::GetApp().GetRenderer()->OnInit();
+        //renderer->OnInit();
     }
 
     void WindowsWindow::Show() {
@@ -63,7 +64,8 @@ namespace Kronos {
     }
 
     void WindowsWindow::Close() {
-        renderer->OnDestroy();
+        Application::GetApp().GetRenderer()->OnDestroy();
+        //renderer->OnDestroy();
         ::DestroyWindow(s_Hwnd);
     }
 
@@ -109,7 +111,8 @@ namespace Kronos {
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(s_Hwnd, &ps);
-            renderer->OnRender();
+            Application::GetApp().GetRenderer()->OnRender();
+            //renderer->OnRender();
             EndPaint(s_Hwnd, &ps);
         }
         return 0;

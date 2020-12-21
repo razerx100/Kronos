@@ -26,6 +26,8 @@ namespace Kronos {
 		void OnUpdate() override;
 		void OnRender() override;
 		void OnDestroy() override;
+
+		void ChangeTriangleColor(int& num) override;
 	};
 }
 #endif

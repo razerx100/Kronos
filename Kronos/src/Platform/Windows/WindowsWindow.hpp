@@ -20,8 +20,6 @@ namespace Kronos{
         void Init(const WindowProps& props);
         LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, WindowData data);
 
-        Renderer* renderer;
-
         static HWND s_Hwnd;
         MSG m_msg;
         WNDCLASSEX m_wc;

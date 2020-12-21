@@ -14,7 +14,9 @@ namespace Kronos {
 		m_frameIndex(0),
 		m_viewport(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height)),
 		m_scissorRect(0, 0, static_cast<LONG>(width), static_cast<LONG>(height)),
-		m_rtvDescriptorSize(0), m_vertexBuffferView(nullptr) {
+		m_rtvDescriptorSize(0), m_vertexBuffferView(nullptr),
+		m_backgroundColor(DirectX::Colors::DimGray),
+		m_primitive(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST) {
 		LoadPipeline();
 		CreateRootSignature();
 		CreateCommandList();
@@ -257,8 +259,9 @@ namespace Kronos {
 		);
 		m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 		// Record Commands
-		const float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-		m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+		m_commandList->ClearRenderTargetView(
+			rtvHandle, reinterpret_cast<float*>(&m_backgroundColor), 0, nullptr
+		);
 		m_commandList->IASetPrimitiveTopology(m_primitive);
 		m_commandList->IASetVertexBuffers(0, 1, m_vertexBuffferView);
 		m_commandList->DrawInstanced(3, 1, 0, 0);
