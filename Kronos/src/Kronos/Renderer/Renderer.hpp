@@ -24,8 +24,6 @@ namespace Kronos {
 		inline unsigned int GetHeight() const { return m_height; }
 		inline const char* GetTitle() const { return m_title.c_str(); }
 
-		virtual void ChangeTriangleColor(int& num){}
-
 		static Renderer* Create(unsigned int width, unsigned int height);
 	};
 }

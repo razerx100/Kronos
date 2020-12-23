@@ -3,6 +3,7 @@
 #include "Kronos/Application.hpp"
 #include "Windows/WindowsWindow.hpp"
 #include "DxShader.hpp"
+#include "Kronos/Library/Color.hpp"
 
 #pragma comment(lib, "DXGI.lib") // DXGI Lib link
 #pragma comment(lib, "d3d12.lib") // Dx12 Lib link
@@ -15,9 +16,9 @@ namespace Kronos {
 		m_viewport(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height)),
 		m_scissorRect(0, 0, static_cast<LONG>(width), static_cast<LONG>(height)),
 		m_rtvDescriptorSize(0), m_vertexBuffferView(nullptr),
-		m_backgroundColor(DirectX::Colors::DimGray),
+		m_backgroundColor{0.1f, 0.1f, 0.1f, 1.0f},
 		m_primitive(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST) {
-		LoadPipeline();
+		LoadPipelineResources();
 		CreateRootSignature();
 		CreateCommandList();
 		CreateSyncObjects();
@@ -104,7 +105,7 @@ namespace Kronos {
 
 		*ppAdapter = adapter.Detach();
 	}
-	void Dx12Context::LoadPipeline() {
+	void Dx12Context::LoadPipelineResources() {
 		UINT dxgiFactoryFlags = 0;
 #if defined(_DEBUG)
 		// Enable the debug layer (requires the graphics tools "optional features").
@@ -319,8 +320,29 @@ namespace Kronos {
 		// complete before continuing.
 		WaitForPreviousFrame();
 	}
-	void Dx12Context::CreatePipelineState(D3D12_GRAPHICS_PIPELINE_STATE_DESC* psoDesc) {
-		ThrowIfFailed(m_device->CreateGraphicsPipelineState(psoDesc, IID_PPV_ARGS(&m_pipelineState)));
+	void Dx12Context::CreatePipelineState(
+		D3D12_INPUT_ELEMENT_DESC* vertexInputLayout,
+		UINT layoutElements,
+		ComPtr<ID3DBlob> vertexShader,
+		ComPtr<ID3DBlob> pixelShader
+	) {
+		// Describe and create the graphics pipeline state object (PSO).
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
+		psoDesc.InputLayout = { vertexInputLayout, layoutElements };
+		psoDesc.pRootSignature = m_rootSignature.Get();
+		psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader.Get());
+		psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShader.Get());
+		psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+		psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+		psoDesc.DepthStencilState.DepthEnable = FALSE;
+		psoDesc.DepthStencilState.StencilEnable = FALSE;
+		psoDesc.SampleMask = UINT_MAX;
+		psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		psoDesc.NumRenderTargets = 1;
+		psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		psoDesc.SampleDesc.Count = 1;
+
+		ThrowIfFailed(m_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState)));
 	}
 	_Use_decl_annotations_
 	void Dx12Context::ParseCommandLineArgs(WCHAR* argv[], int argc) {

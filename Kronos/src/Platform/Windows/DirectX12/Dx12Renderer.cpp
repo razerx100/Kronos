@@ -4,8 +4,8 @@
 #include "Kronos/Renderer/GraphicsContext.hpp"
 #include "Windows/DirectX12/DxHelper.hpp"
 #include "Kronos/Renderer/Shader.hpp"
-#include "DirectXColors.h"
 #include "Windows/WindowsWindow.hpp"
+#include "Kronos/Library/Color.hpp"
 
 #pragma comment(lib, "DXGI.lib") // DXGI Lib link
 #pragma comment(lib, "d3d12.lib") // Dx12 Lib link
@@ -15,29 +15,16 @@ namespace Kronos {
 		: Renderer(width, height, "DirectX12") {
 		m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
-		DirectX::XMVECTORF32 color = DirectX::Colors::AliceBlue;
-		m_triangleVertices.topPoint = {
-			{ 0.4f, 0.50f * m_aspectRatio, 0.0f }, color
+		DirectX::XMFLOAT4 color = Colors::AliceBlue;
+		m_triangleVertices.point1 = {
+			{ 0.15f, 0.50f * m_aspectRatio, 0.0f }, color
 		};
-		m_triangleVertices.rightPoint = {
+		m_triangleVertices.point2 = {
+			{ 0.65f, 0.50f * m_aspectRatio, 0.0f }, color
+		};
+		m_triangleVertices.point3 = {
 			{ 0.65f, 0.00f * m_aspectRatio, 0.0f }, color
 		};
-		m_triangleVertices.leftPoint = {
-			{ 0.15f, 0.00f * m_aspectRatio, 0.0f }, color
-		};
-	}
-	// TEST FUNCTION. WILL REMOVE LATER.
-	void Dx12Renderer::ChangeTriangleColor(int& num) {
-		if (num) {
-			m_triangleVertices.ChangeColor(DirectX::Colors::BlanchedAlmond);
-			num = 0;
-		}
-		else {
-			m_triangleVertices.ChangeColor(DirectX::Colors::PaleVioletRed);
-			num = 1;
-		}
-		CreateVertexBuffer();
-		PostMessage(WindowsWindow::GetHWND(), WM_PAINT, 0, 0);
 	}
 	Renderer* Renderer::Create(unsigned int width, unsigned int height) {
 		return new Dx12Renderer(width, height);
@@ -45,7 +32,7 @@ namespace Kronos {
 	Dx12Renderer::~Dx12Renderer() { }
 	void Dx12Renderer::OnInit() {
 		GraphicsContext::CreateContext(m_width, m_height);
-		GraphicsContext::GetShaderAsset()->Initialize();
+		GraphicsContext::GetShaderAsset().Init();
 		CreateVertexBuffer();
 	}
 	void Dx12Renderer::OnUpdate() {
@@ -53,8 +40,9 @@ namespace Kronos {
 	}
 	void Dx12Renderer::OnRender() {
 		if (GraphicsContext::GetGraphicsContext()) {
-			Dx12Context* context = GraphicsContext::GetDirectXContext();
-			context->SetVertexBufferView(&m_vertexBufferView);
+			GraphicsContext::GetDirectXContext()->SetVertexBufferView(
+				&m_vertexBufferView
+			);
 			GraphicsContext::SwapBuffers();
 		}
 	}

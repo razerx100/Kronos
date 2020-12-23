@@ -23,7 +23,7 @@ namespace Kronos {
 		static void SwapBuffers();
 
 		static inline GraphicsContext* GetGraphicsContext() { return s_Context; }
-		static inline Shader* GetShaderAsset() { return s_shaderAsset; }
+		static inline Shader& GetShaderAsset() { return *s_shaderAsset; }
 		static Dx12Context* GetDirectXContext();
 	};
 }

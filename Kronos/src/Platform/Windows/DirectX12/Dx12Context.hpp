@@ -4,7 +4,6 @@
 #include "Windows/DirectX12/DxShader.hpp"
 #include "Windows/stdafx.hpp"
 #include "Windows/DirectX12/Dx12Structs.hpp"
-#include "DirectXColors.h"
 
 namespace Kronos {
 	using namespace DirectX;
@@ -14,26 +13,27 @@ namespace Kronos {
 		Dx12Context(UINT width, UINT height);
 		~Dx12Context();
 
-		void CreatePipelineState(D3D12_GRAPHICS_PIPELINE_STATE_DESC* psoDesc);
+		void CreatePipelineState(
+			D3D12_INPUT_ELEMENT_DESC* vertexInputLayout,
+			UINT layoutElements,
+			ComPtr<ID3DBlob> vertexShader,
+			ComPtr<ID3DBlob> pixelShader
+		);
 
 		inline void SetVertexBufferView(
 			D3D12_VERTEX_BUFFER_VIEW* vertexBufferView
 		) { m_vertexBuffferView = vertexBufferView; }
-		inline void SetPrimitive(D3D_PRIMITIVE_TOPOLOGY primitive)
-		{ m_primitive = primitive; }
-		inline void SetBackgroundColor(XMVECTORF32 color)
+		inline void SetBackgroundColor(XMFLOAT4 color)
 		{ m_backgroundColor = color; }
 		// Set Background color
 
 		inline ComPtr<ID3D12Device> GetDevice() { return m_device; }
-		inline ComPtr<ID3D12RootSignature> GetRootSignature()
-		{ return m_rootSignature; }
 
 	private:
 		static const UINT FrameCount = 3;
 		UINT m_width, m_height;
 		bool m_useWarpDevice;
-		XMVECTORF32 m_backgroundColor;
+		XMFLOAT4 m_backgroundColor;
 
 		// Pipeline objects.
 		CD3DX12_VIEWPORT m_viewport;
@@ -66,7 +66,7 @@ namespace Kronos {
 			_Outptr_result_maybenull_ IDXGIAdapter1** ppAdapter,
 			bool requestHighPerformanceAdapter = false
 		);
-		void LoadPipeline();
+		void LoadPipelineResources();
 		void swapBuffers() override;
 		void PopulateCommandList();
 		void WaitForPreviousFrame();

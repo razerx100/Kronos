@@ -54,8 +54,7 @@ namespace Kronos {
             NULL, NULL, m_wc.hInstance, this
         );
 
-        Application::GetApp().GetRenderer()->OnInit();
-        //renderer->OnInit();
+        Application::GetApp().GetRenderer().OnInit();
     }
 
     void WindowsWindow::Show() {
@@ -64,8 +63,7 @@ namespace Kronos {
     }
 
     void WindowsWindow::Close() {
-        Application::GetApp().GetRenderer()->OnDestroy();
-        //renderer->OnDestroy();
+        Application::GetApp().GetRenderer().OnDestroy();
         ::DestroyWindow(s_Hwnd);
     }
 
@@ -111,8 +109,7 @@ namespace Kronos {
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(s_Hwnd, &ps);
-            Application::GetApp().GetRenderer()->OnRender();
-            //renderer->OnRender();
+            Application::GetApp().GetRenderer().OnRender();
             EndPaint(s_Hwnd, &ps);
         }
         return 0;

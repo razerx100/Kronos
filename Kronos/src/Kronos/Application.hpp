@@ -34,7 +34,7 @@ namespace Kronos {
 
 		static Application& GetApp() { return *s_Instance; }
 		inline Window* GetWindow() { return m_Window; }
-		inline Renderer* GetRenderer() { return m_Renderer; }
+		inline Renderer& GetRenderer() { return *m_Renderer; }
 	};
 	Application* CreateApplication();
 

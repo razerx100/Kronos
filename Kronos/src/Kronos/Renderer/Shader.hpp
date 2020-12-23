@@ -14,7 +14,7 @@ namespace Kronos {
 		virtual void GetAssetsPath() = 0;
 
 	public:
-		virtual void Initialize() = 0;
+		virtual void Init() = 0;
 	};
 }
 #endif

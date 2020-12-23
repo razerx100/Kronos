@@ -14,10 +14,21 @@ namespace Kronos {
 		~DxShader();
 
 		void GetAssetsPath() override;
-		void Initialize() override;
+		void Init() override;
 
 	private:
-		void InitializePipeLineState();
+		UINT m_compilerFlags;
+
+		// Shaders
+		ComPtr<ID3DBlob> m_vertexShader;
+		ComPtr<ID3DBlob> m_pixelShader;
+
+		// Vertex input layout
+		const static UINT inputElements = 2;
+		D3D12_INPUT_ELEMENT_DESC m_inputElementDescs[inputElements];
+
+		void SetVertexInputLayout();
+		void CompileShaders();
 	};
 }
 #endif
