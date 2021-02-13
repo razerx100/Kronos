@@ -19,6 +19,7 @@ namespace Kronos {
 			ComPtr<ID3DBlob> vertexShader,
 			ComPtr<ID3DBlob> pixelShader
 		);
+		void BeginInitialGPUSetup();
 
 		inline void SetVertexBufferView(
 			D3D12_VERTEX_BUFFER_VIEW* vertexBufferView
@@ -28,6 +29,8 @@ namespace Kronos {
 		// Set Background color
 
 		inline ComPtr<ID3D12Device> GetDevice() { return m_device; }
+		inline ComPtr<ID3D12GraphicsCommandList> GetCommandList() { return m_commandList; }
+		inline ComPtr<ID3D12DescriptorHeap> GetSrvHeap() { return m_srvHeap; }
 
 	private:
 		static const UINT FrameCount = 3;
@@ -45,6 +48,7 @@ namespace Kronos {
 		ComPtr<ID3D12CommandQueue> m_commandQueue;
 		ComPtr<ID3D12RootSignature> m_rootSignature;
 		ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
+		ComPtr<ID3D12DescriptorHeap> m_srvHeap;
 		ComPtr<ID3D12PipelineState> m_pipelineState;
 		ComPtr<ID3D12GraphicsCommandList> m_commandList;
 		UINT m_rtvDescriptorSize;

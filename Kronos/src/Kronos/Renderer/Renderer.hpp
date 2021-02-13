@@ -8,7 +8,7 @@ namespace Kronos {
 	protected:
 		std::string m_title;
 		unsigned int m_width, m_height;
-		TriangleVertices m_triangleVertices;
+		TriangleVerticesT m_triangleVertices;
 
 	public:
 		Renderer(unsigned int width, unsigned int height, std::string name)

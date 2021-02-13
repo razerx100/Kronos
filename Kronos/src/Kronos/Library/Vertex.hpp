@@ -4,14 +4,23 @@
 
 namespace Kronos {
 	using namespace DirectX;
-	struct Vertex {
+	struct VertexC {
 		XMFLOAT3 position;
 		XMFLOAT4 color;
 	};
-	struct TriangleVertices {
-		Vertex point1;
-		Vertex point2;
-		Vertex point3;
+	struct VertexT {
+		XMFLOAT3 position;
+		XMFLOAT2 uv;
+	};
+	struct TriangleVerticesC {
+		VertexC point1;
+		VertexC point2;
+		VertexC point3;
+	};
+	struct TriangleVerticesT {
+		VertexT point1;
+		VertexT point2;
+		VertexT point3;
 	};
 }
 #endif

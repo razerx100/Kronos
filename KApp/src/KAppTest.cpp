@@ -1,5 +1,6 @@
 #include<Kronos.hpp>
 #include<ctime>
+
 class ExampleLayer : public Kronos::Layer {
 public:
 	ExampleLayer() : Layer("Hello") {
