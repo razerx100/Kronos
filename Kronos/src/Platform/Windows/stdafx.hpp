@@ -17,3 +17,8 @@
 #include <shellapi.h>
 
 #endif
+
+// #pragma comment(lib, "DXGI") // DXGI Lib link
+// #pragma comment(lib, "d3d12") // Dx12 Lib link
+// #pragma comment(lib, "d3dcompiler") // DxCompiler Lib link
+// #pragma comment(lib, "dxguid") // GUID Lib link

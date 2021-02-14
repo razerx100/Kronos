@@ -5,9 +5,7 @@
 #include "Windows/DirectX12/Dx12Context.hpp"
 #include "Kronos/Renderer/GraphicsContext.hpp"
 
-#pragma comment(lib, "DXGI.lib") // DXGI Lib link
-#pragma comment(lib, "d3d12.lib") // Dx12 Lib link
-#pragma comment(lib, "d3dcompiler.lib") // DxCompiler Lib link
+#pragma comment(lib, "d3dcompiler")
 
 namespace Kronos {
 	DxShader::DxShader() {

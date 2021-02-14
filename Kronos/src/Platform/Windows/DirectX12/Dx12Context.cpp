@@ -5,9 +5,8 @@
 #include "DxShader.hpp"
 #include "Kronos/Library/Color.hpp"
 
-#pragma comment(lib, "DXGI.lib") // DXGI Lib link
-#pragma comment(lib, "d3d12.lib") // Dx12 Lib link
-
+#pragma comment(lib, "d3d12")
+#pragma comment(lib, "DXGI")
 
 namespace Kronos {
 	Dx12Context::Dx12Context(UINT width, UINT height)

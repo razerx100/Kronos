@@ -7,8 +7,7 @@
 #include "Windows/WindowsWindow.hpp"
 #include "Kronos/Library/Color.hpp"
 
-#pragma comment(lib, "DXGI.lib") // DXGI Lib link
-#pragma comment(lib, "d3d12.lib") // Dx12 Lib link
+#pragma comment(lib, "dxguid")
 
 namespace Kronos {
 	Dx12Renderer::Dx12Renderer(unsigned int width, unsigned int height)

@@ -13,8 +13,6 @@
 #include <stdexcept>
 #include "Windows/stdafx.hpp"
 
-#pragma comment(lib, "dxguid.lib") // IID library
-
 namespace Kronos {
 	using Microsoft::WRL::ComPtr;
     inline std::string HrToString(HRESULT hr)
