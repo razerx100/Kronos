@@ -1,5 +1,5 @@
 # Kronos
-Game engine (Under development).
+Game engine (On hold since DirectX12 is too complicated for a beginner.So first I'm trying to learn DirectX11/Graphics Programing concepts first and then once I get better with DirectX11, will continue this and DirectX12 again).
 
 # Requirements
 1: cmake 3.12+.\
